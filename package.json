@@ -1,0 +1,17 @@
+{
+  "name": "typescript-design-patterns",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build --watch",
+    "start": "node --watch ./dist/decorator/app2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0-dev.20230207"
+  }
+}
