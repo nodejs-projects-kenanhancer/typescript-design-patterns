@@ -17,13 +17,15 @@ class RealImage implements Image {
 }
 
 class ProxyImage implements Image {
-  private readonly realImage: Image;
+  private realImage!: Image;
 
-  constructor(fileName: string) {
-    this.realImage = new RealImage(fileName);
-  }
+  constructor(public readonly fileName: string) {}
 
   display(): void {
+    if (!this.realImage) {
+      this.realImage = new RealImage(this.fileName);
+    }
+
     this.realImage.display();
   }
 }
@@ -31,5 +33,9 @@ class ProxyImage implements Image {
 (function () {
   const image: Image = new ProxyImage("dog.png");
 
+  //image will be loaded from disk
+  image.display();
+
+  //image will not be loaded from disk
   image.display();
 })();
