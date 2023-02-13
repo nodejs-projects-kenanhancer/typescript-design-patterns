@@ -7,25 +7,27 @@ class SimpleWindow implements IWindow {
   draw(): void {
     // Draw window
   }
+
   getDescription(): string {
     return "simple window";
   }
 }
 
 abstract class WindowDecorator implements IWindow {
-  constructor(private readonly windowToBeDecorated: IWindow) {}
+  constructor(private readonly decoratedWindow: IWindow) {}
 
   draw(): void {
-    this.windowToBeDecorated.draw();
+    this.decoratedWindow.draw();
   }
+
   getDescription(): string {
-    return this.windowToBeDecorated.getDescription();
+    return this.decoratedWindow.getDescription();
   }
 }
 
 class VerticalScrollBarDecorator extends WindowDecorator {
-  constructor(windowToBeDecorated: IWindow) {
-    super(windowToBeDecorated);
+  constructor(decoratedWindow: IWindow) {
+    super(decoratedWindow);
   }
 
   private drawVerticalScrollBar() {
@@ -43,8 +45,8 @@ class VerticalScrollBarDecorator extends WindowDecorator {
 }
 
 class HorizontalScrollBarDecorator extends WindowDecorator {
-  constructor(windowToBeDecorated: IWindow) {
-    super(windowToBeDecorated);
+  constructor(decoratedWindow: IWindow) {
+    super(decoratedWindow);
   }
 
   private drawVerticalScrollBar() {
