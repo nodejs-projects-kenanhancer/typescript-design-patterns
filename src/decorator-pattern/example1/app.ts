@@ -5,7 +5,7 @@ interface IWindow {
 
 class SimpleWindow implements IWindow {
   draw(): void {
-    // Draw window
+    console.log("Draw window");
   }
 
   getDescription(): string {
@@ -14,7 +14,7 @@ class SimpleWindow implements IWindow {
 }
 
 abstract class WindowDecorator implements IWindow {
-  constructor(private readonly decoratedWindow: IWindow) {}
+  constructor(protected readonly decoratedWindow: IWindow) {}
 
   draw(): void {
     this.decoratedWindow.draw();
@@ -31,7 +31,7 @@ class VerticalScrollBarDecorator extends WindowDecorator {
   }
 
   private drawVerticalScrollBar() {
-    // Draw the vertical scrollbar
+    console.log("Draw the vertical scrollbar");
   }
 
   draw(): void {
@@ -50,7 +50,7 @@ class HorizontalScrollBarDecorator extends WindowDecorator {
   }
 
   private drawVerticalScrollBar() {
-    // Draw the horizontal scrollbar
+    console.log("Draw the horizontal scrollbar");
   }
 
   draw(): void {

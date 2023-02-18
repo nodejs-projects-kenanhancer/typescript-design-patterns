@@ -22,62 +22,64 @@ abstract class ShapeDecorator implements Shape {
   }
 }
 
-class RedShapeDecorator extends ShapeDecorator {
-  constructor(decoratedShape: Shape) {
+enum Color {
+  RED = "RED",
+  YELLOW = "YELLOW",
+  GREEN = "GREEN",
+  BLUE = "BLUE",
+}
+
+class BorderDecorator extends ShapeDecorator {
+  constructor(public readonly color: Color, decoratedShape: Shape) {
     super(decoratedShape);
   }
 
-  private setRedBorder(decoratedShape: Shape) {
-    console.log("Border Color: Red");
+  private setBorder() {
+    console.log(`Border Color: ${this.color}`);
   }
 
   draw(): void {
     this.decoratedShape.draw();
-    this.setRedBorder(this.decoratedShape);
+    this.setBorder();
   }
 }
 
-class GreenShapeDecorator implements Shape {
-  constructor(private readonly decoratedShape: Shape) {}
+class BackgroudDecorator extends ShapeDecorator {
+  constructor(public readonly color: Color, decoratedShape: Shape) {
+    super(decoratedShape);
+  }
 
-  private setGreenBorder(decoratedShape: Shape) {
-    console.log("Border Color: Green");
+  private setBackground() {
+    console.log(`Background Color: ${this.color}`);
   }
 
   draw(): void {
     this.decoratedShape.draw();
-    this.setGreenBorder(this.decoratedShape);
+    this.setBackground();
   }
 }
 
 (function () {
   const circle: Shape = new Circle();
 
-  const redCircle: Shape = new RedShapeDecorator(new Circle());
+  const greenBackgroundRectangle: Shape = new BackgroudDecorator(Color.GREEN,new Rectangle());
+  
+  const redBackgroundYellowBorderCircle: Shape = new BackgroudDecorator(Color.RED, new BorderDecorator(Color.YELLOW, new Circle()));
 
-  const redRectangle: Shape = new RedShapeDecorator(new Rectangle());
 
-  const greenCircle: Shape = new GreenShapeDecorator(new Circle());
 
-  const greenRectangle: Shape = new GreenShapeDecorator(new Rectangle());
-
-  console.log("Circle with normal border");
+  console.log("Circle with normal border and background color");
 
   circle.draw();
 
-  console.log("Circle of red border");
 
-  redCircle.draw();
+  console.log("Rectangle with normal border and green background color");
 
-  console.log("Rectangle of red border");
+  greenBackgroundRectangle.draw();
 
-  redRectangle.draw();
 
-  console.log("Circle of green border");
+  console.log("Circle with yellow border and red background color");
 
-  greenCircle.draw();
+  redBackgroundYellowBorderCircle.draw();
 
-  console.log("Rectangle of green border");
-
-  greenRectangle.draw();
 })();
