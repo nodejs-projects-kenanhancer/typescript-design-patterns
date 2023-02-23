@@ -8,7 +8,7 @@ class RealImage implements Image {
   }
 
   loadFromDisk(fileName: string) {
-    console.log(`Loading ${fileName}`);
+    console.log(`Loading ${fileName} from disk`);
   }
 
   display(): void {
