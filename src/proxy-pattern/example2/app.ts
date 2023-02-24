@@ -7,7 +7,7 @@ class RealImage implements Image {
     this.loadFromDisk(fileName);
   }
 
-  loadFromDisk(fileName: string) {
+  private loadFromDisk(fileName: string) {
     console.log(`Loading ${fileName} from disk`);
   }
 
@@ -33,9 +33,9 @@ class ProxyImage implements Image {
 (function () {
   const image: Image = new ProxyImage("dog.png");
 
-  //image will be loaded from disk
+  // image will be loaded from disk
   image.display();
 
-  //image will not be loaded from disk
+  // image will be loaded from cache
   image.display();
 })();
