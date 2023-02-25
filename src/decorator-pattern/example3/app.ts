@@ -9,7 +9,11 @@ class SimpleIceCreamCone implements IceCreamCone {
 }
 
 abstract class IceCreamConeDecorator implements IceCreamCone {
-  constructor(protected readonly decoratedIceCreamCone: IceCreamCone) {}
+  protected readonly decoratedIceCreamCone: IceCreamCone;
+
+  constructor(decoratedIceCreamCone: IceCreamCone) {
+    this.decoratedIceCreamCone = decoratedIceCreamCone;
+  }
 
   getFlavors(): string {
     return this.decoratedIceCreamCone.getFlavors();
@@ -39,18 +43,31 @@ class StrawberryDecorator extends IceCreamConeDecorator {
 (function () {
   const iceCreamCone: IceCreamCone = new SimpleIceCreamCone();
 
-  const chocolateIceCreamCone: IceCreamCone = new ChocolateDecorator(new SimpleIceCreamCone());
+  const chocolateIceCreamCone: IceCreamCone = new ChocolateDecorator(
+    new SimpleIceCreamCone()
+  );
 
-  const strawberryIceCreamCone: IceCreamCone = new StrawberryDecorator(new SimpleIceCreamCone());
+  const strawberryIceCreamCone: IceCreamCone = new StrawberryDecorator(
+    new SimpleIceCreamCone()
+  );
 
-  const mixIceCreamCone: IceCreamCone = new StrawberryDecorator(new ChocolateDecorator(new SimpleIceCreamCone()));
+  const mixIceCreamCone: IceCreamCone = new StrawberryDecorator(
+    new ChocolateDecorator(new SimpleIceCreamCone())
+  );
 
-  console.log(`Flavors of the ice cream cone are: ${iceCreamCone.getFlavors()}`);
+  console.log(
+    `Flavors of the ice cream cone are: ${iceCreamCone.getFlavors()}`
+  );
 
-  console.log(`Flavors of the ice cream cone are: ${chocolateIceCreamCone.getFlavors()}`);
+  console.log(
+    `Flavors of the ice cream cone are: ${chocolateIceCreamCone.getFlavors()}`
+  );
 
-  console.log(`Flavors of the ice cream cone are: ${strawberryIceCreamCone.getFlavors()}`);
+  console.log(
+    `Flavors of the ice cream cone are: ${strawberryIceCreamCone.getFlavors()}`
+  );
 
-  console.log(`Flavors of the ice cream cone are: ${mixIceCreamCone.getFlavors()}`);
-
+  console.log(
+    `Flavors of the ice cream cone are: ${mixIceCreamCone.getFlavors()}`
+  );
 })();

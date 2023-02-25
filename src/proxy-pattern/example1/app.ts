@@ -120,7 +120,11 @@ class YouTubeCacheProxy implements ThirdPartyYouTubeLib {
 }
 
 class YouTubeDownloader {
-  constructor(private readonly api: ThirdPartyYouTubeLib) {}
+  private readonly api: ThirdPartyYouTubeLib;
+
+  constructor(api: ThirdPartyYouTubeLib) {
+    this.api = api;
+  }
 
   renderVideoPage(videoId: string) {
     const video: Video = this.api.getVideoInfo(videoId);
@@ -153,7 +157,6 @@ class YouTubeDownloader {
 }
 
 (function () {
-
   const smartDownloader = new YouTubeDownloader(new YouTubeCacheProxy());
 
   // video will be loaded from youtube.com

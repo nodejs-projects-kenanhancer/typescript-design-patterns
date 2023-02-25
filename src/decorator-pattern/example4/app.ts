@@ -33,8 +33,11 @@ class DarkRoast extends Beverage {
 }
 
 abstract class CondimentDecorator extends Beverage {
-  constructor(protected readonly beverage: Beverage) {
+  protected readonly beverage: Beverage;
+
+  constructor(beverage: Beverage) {
     super();
+    this.beverage = beverage;
   }
 
   abstract getDescription(): string;

@@ -15,7 +15,11 @@ class Circle implements Shape {
 }
 
 abstract class ShapeDecorator implements Shape {
-  constructor(protected readonly decoratedShape: Shape) {}
+  protected readonly decoratedShape: Shape;
+
+  constructor(decoratedShape: Shape) {
+    this.decoratedShape = decoratedShape;
+  }
 
   draw(): void {
     this.decoratedShape.draw();
@@ -62,24 +66,25 @@ class BackgroudDecorator extends ShapeDecorator {
 (function () {
   const circle: Shape = new Circle();
 
-  const greenBackgroundRectangle: Shape = new BackgroudDecorator(Color.GREEN,new Rectangle());
-  
-  const redBackgroundYellowBorderCircle: Shape = new BackgroudDecorator(Color.RED, new BorderDecorator(Color.YELLOW, new Circle()));
+  const greenBackgroundRectangle: Shape = new BackgroudDecorator(
+    Color.GREEN,
+    new Rectangle()
+  );
 
-
+  const redBackgroundYellowBorderCircle: Shape = new BackgroudDecorator(
+    Color.RED,
+    new BorderDecorator(Color.YELLOW, new Circle())
+  );
 
   console.log("Circle with normal border and background color");
 
   circle.draw();
 
-
   console.log("Rectangle with normal border and green background color");
 
   greenBackgroundRectangle.draw();
 
-
   console.log("Circle with yellow border and red background color");
 
   redBackgroundYellowBorderCircle.draw();
-
 })();
