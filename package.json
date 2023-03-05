@@ -6,12 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build --watch",
-    "start": "node --watch ./dist/decorator/app2"
+    "preStart": "npm run build",
+    "start": "node --watch ./dist/decorator-pattern/example6/app",
+    "install:rc": "npm i -D typescript@rc",
+    "install:next": "npm i -D typescript@next",
+    "install:beta": "npm i -D typescript@beta"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.0.0-dev.20230207"
+    "typescript": "^5.0.1-rc"
   }
 }

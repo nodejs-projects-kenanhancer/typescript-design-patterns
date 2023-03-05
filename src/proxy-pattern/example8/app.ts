@@ -41,6 +41,6 @@ class RemoteDatabaseService implements DatabaseService {
   }
 }
 
-class DatabaseServiceProxy implements DatabaseService{
+// class DatabaseServiceProxy implements DatabaseService{
   
-}
+// }
