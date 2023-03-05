@@ -1,14 +1,27 @@
+/*
+
+suppose we want to add some functionality to RealImage such that 
+it counts the number of times the image is displayed. 
+We could modify the RealImage class directly, but this could potentially 
+cause issues if the class is used in multiple places. 
+Instead, we can use a proxy to add the new functionality without modifying the original class.
+
+*/
+
 interface Image {
   display(): void;
 }
 
 class RealImage implements Image {
-  constructor(private readonly fileName: string) {
-    this.loadFromDisk(fileName);
+  private readonly fileName: string;
+
+  constructor(fileName: string) {
+    this.fileName = fileName;
+    this.loadFromDisk();
   }
 
-  private loadFromDisk(fileName: string) {
-    console.log(`Loading ${fileName} from disk`);
+  private loadFromDisk() {
+    console.log(`Loading ${this.fileName} from disk`);
   }
 
   display(): void {
@@ -17,9 +30,14 @@ class RealImage implements Image {
 }
 
 class ProxyImage implements Image {
+  private readonly fileName: string;
+  private count: number;
   private realImage!: Image;
 
-  constructor(public readonly fileName: string) {}
+  constructor(fileName: string) {
+    this.fileName = fileName;
+    this.count = 0;
+  }
 
   display(): void {
     if (!this.realImage) {
@@ -27,6 +45,10 @@ class ProxyImage implements Image {
     }
 
     this.realImage.display();
+
+    this.count++;
+
+    console.log(`Image displayed ${this.count} times.`);
   }
 }
 
@@ -39,3 +61,5 @@ class ProxyImage implements Image {
   // image will be loaded from cache
   image.display();
 })();
+
+export {};
