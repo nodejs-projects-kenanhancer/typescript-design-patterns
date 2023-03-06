@@ -15,7 +15,7 @@ class Circle implements Shape {
 }
 
 abstract class ShapeDecorator implements Shape {
-  protected readonly decoratedShape: Shape;
+  private readonly decoratedShape: Shape;
 
   constructor(decoratedShape: Shape) {
     this.decoratedShape = decoratedShape;
@@ -43,7 +43,7 @@ class BorderDecorator extends ShapeDecorator {
   }
 
   draw(): void {
-    this.decoratedShape.draw();
+    super.draw();
     this.setBorder();
   }
 }
@@ -58,7 +58,7 @@ class BackgroudDecorator extends ShapeDecorator {
   }
 
   draw(): void {
-    this.decoratedShape.draw();
+    super.draw();
     this.setBackground();
   }
 }

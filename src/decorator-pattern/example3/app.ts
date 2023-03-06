@@ -9,7 +9,7 @@ class SimpleIceCreamCone implements IceCreamCone {
 }
 
 abstract class IceCreamConeDecorator implements IceCreamCone {
-  protected readonly decoratedIceCreamCone: IceCreamCone;
+  private readonly decoratedIceCreamCone: IceCreamCone;
 
   constructor(decoratedIceCreamCone: IceCreamCone) {
     this.decoratedIceCreamCone = decoratedIceCreamCone;

@@ -14,7 +14,7 @@ class SimpleWindow implements IWindow {
 }
 
 abstract class WindowDecorator implements IWindow {
-  protected readonly decoratedWindow: IWindow;
+  private readonly decoratedWindow: IWindow;
 
   constructor(decoratedWindow: IWindow) {
     this.decoratedWindow = decoratedWindow;

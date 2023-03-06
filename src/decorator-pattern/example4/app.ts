@@ -33,14 +33,20 @@ class DarkRoast extends Beverage {
 }
 
 abstract class CondimentDecorator extends Beverage {
-  protected readonly beverage: Beverage;
+  private readonly beverage: Beverage;
 
   constructor(beverage: Beverage) {
     super();
     this.beverage = beverage;
   }
 
-  abstract getDescription(): string;
+  getDescription(): string {
+    return this.beverage.getDescription();
+  }
+
+  cost(): number {
+    return this.beverage.cost();
+  }
 }
 
 class Mocha extends CondimentDecorator {
@@ -49,11 +55,11 @@ class Mocha extends CondimentDecorator {
   }
 
   getDescription(): string {
-    return this.beverage.getDescription() + ", Mocha";
+    return super.getDescription() + ", Mocha";
   }
 
   cost(): number {
-    return this.beverage.cost() + 20;
+    return super.cost() + 20;
   }
 }
 
@@ -63,11 +69,11 @@ class SteamedMilk extends CondimentDecorator {
   }
 
   getDescription(): string {
-    return this.beverage.getDescription() + ", Steamed Milk";
+    return super.getDescription() + ", Steamed Milk";
   }
 
   cost(): number {
-    return this.beverage.cost() + 10;
+    return super.cost() + 10;
   }
 }
 
@@ -77,11 +83,11 @@ class Soy extends CondimentDecorator {
   }
 
   getDescription(): string {
-    return this.beverage.getDescription() + ", Soy";
+    return super.getDescription() + ", Soy";
   }
 
   cost(): number {
-    return this.beverage.cost() + 15;
+    return super.cost() + 15;
   }
 }
 
@@ -91,11 +97,11 @@ class Whip extends CondimentDecorator {
   }
 
   getDescription(): string {
-    return this.beverage.getDescription() + ", Whip";
+    return super.getDescription() + ", Whip";
   }
 
   cost(): number {
-    return this.beverage.cost() + 10;
+    return super.cost() + 10;
   }
 }
 

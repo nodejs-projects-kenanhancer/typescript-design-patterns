@@ -51,10 +51,10 @@ class ContactableUser extends UserDecorator {
 
 (function () {
   const user = new User("Kelly");
-  // user.showInfo();
+  console.log(user.showInfo());
 
   const addressableUser = new AddressableUser(user, "Cheese", "London");
-  // addressableUser.showInfo();
+  console.log(addressableUser.showInfo());
 
   const contactableUser = new ContactableUser(
     addressableUser,
@@ -62,9 +62,15 @@ class ContactableUser extends UserDecorator {
     "111222333"
   );
 
-  const userInfo = contactableUser.showInfo();
+  console.log(contactableUser.showInfo());
 
-  console.log(userInfo);
+  const userInfo = new ContactableUser(
+    new AddressableUser(new User("Kelly"), "Cheese", "London"),
+    "kh@kh.com",
+    "1111111"
+  );
+
+  console.log(userInfo.showInfo());
 })();
 
 export {};
