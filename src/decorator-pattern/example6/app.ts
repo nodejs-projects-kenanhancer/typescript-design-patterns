@@ -16,7 +16,7 @@ abstract class UserDecorator extends User {
 
   showInfo() {
     return this.decoratedUser.showInfo();
-  }
+  } 
 }
 
 class AddressableUser extends UserDecorator {

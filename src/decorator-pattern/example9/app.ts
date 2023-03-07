@@ -29,7 +29,7 @@ abstract class PizzaDecorator implements Pizza {
   }
 }
 
-class Cheese extends PizzaDecorator {
+class ExtraCheese extends PizzaDecorator {
   constructor(pizza: Pizza) {
     super(pizza);
   }
@@ -39,7 +39,7 @@ class Cheese extends PizzaDecorator {
   }
 
   getDescription(): string {
-    return super.getDescription() + ", Cheese";
+    return super.getDescription() + ", Extra Cheese";
   }
 }
 
@@ -58,7 +58,7 @@ class Pepperoni extends PizzaDecorator {
 }
 
 (function () {
-  const mixPizza = new Cheese(new Pepperoni(new Margherita()));
+  const mixPizza = new ExtraCheese(new Pepperoni(new Margherita()));
 
   console.log(mixPizza.getDescription() + ", costs " + mixPizza.getPrice());
 })();

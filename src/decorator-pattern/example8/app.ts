@@ -25,8 +25,12 @@ class SportsCar extends CarDecorator {
     super(car);
   }
 
+  private addSportsCarFeatures() {
+    return "Sports Features";
+  }
+
   assemble(): string {
-    return super.assemble() + ", Sports Features";
+    return super.assemble() + ", " + this.addSportsCarFeatures();
   }
 }
 
@@ -35,8 +39,12 @@ class LuxuryCar extends CarDecorator {
     super(car);
   }
 
+  private addLuxuryCarFeatures() {
+    return "Luxury Features";
+  }
+
   assemble(): string {
-    return super.assemble() + ", Luxury Features";
+    return super.assemble() + ", " + this.addLuxuryCarFeatures();
   }
 }
 
