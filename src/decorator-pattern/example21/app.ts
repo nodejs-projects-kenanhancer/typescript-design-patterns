@@ -48,6 +48,7 @@ class CamelCase extends TextDecorator {
   format(text: string): string {
     return super
       .format(text)
+      .toLowerCase()
       .split(" ")
       .reduce((acc, cv) => {
         return acc + cv.charAt(0).toUpperCase() + cv.slice(1);
@@ -65,47 +66,47 @@ class PascalCase extends TextDecorator {
       .format(text)
       .split(" ")
       .reduce((acc, cv) => {
-        return acc + cv.charAt(0).toUpperCase() + cv.slice(1);
+        return acc + cv.charAt(0).toUpperCase() + cv.slice(1).toLowerCase();
       }, "");
   }
 }
 
-class GreetingConcat extends TextDecorator {
+class SnakeCase extends TextDecorator {
   constructor(text: Text) {
     super(text);
   }
 
   format(text: string): string {
-    return super.format(text).concat("i am here");
+    return super.format(text).toLowerCase().split(" ").join("_");
   }
 }
 
-class SpaceConcat extends TextDecorator {
+class KebabCase extends TextDecorator {
   constructor(text: Text) {
     super(text);
   }
 
   format(text: string): string {
-    return super.format(text).concat(" ");
-  }
-}
-
-class ReplaceHiWithHello extends TextDecorator {
-  constructor(text: Text) {
-    super(text);
-  }
-
-  format(text: string): string {
-    return super.format(text).replace("hi", "hello");
+    return super.format(text).toLowerCase().split(" ").join("-");
   }
 }
 
 (function () {
-  const text = new GreetingConcat(
-    new SpaceConcat(new PascalCase(new ReplaceHiWithHello(new SimpleText())))
-  );
+  const text = new PascalCase(new SimpleText());
 
-  console.log(text.format("hi world!"));
+  console.log(text.format("Order details"));
+
+  const text2 = new CamelCase(new SimpleText());
+
+  console.log(text2.format("Offer details"));
+
+  const text3 = new SnakeCase(new SimpleText());
+
+  console.log(text3.format("Customer DETAILS"));
+
+  const text4 = new KebabCase(new SimpleText());
+
+  console.log(text4.format("Order Details"));
 })();
 
 export {};
