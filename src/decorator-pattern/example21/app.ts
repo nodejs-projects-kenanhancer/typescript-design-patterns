@@ -107,6 +107,10 @@ class KebabCase extends TextDecorator {
   const text4 = new KebabCase(new SimpleText());
 
   console.log(text4.format("Order Details"));
+
+  const text5 = new ToUpperCase(new KebabCase(new SimpleText()));
+
+  console.log(text5.format("Order Details"));
 })();
 
 export {};
