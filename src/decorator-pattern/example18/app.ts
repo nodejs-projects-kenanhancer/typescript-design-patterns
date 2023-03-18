@@ -2,9 +2,9 @@ interface Notifier {
   send(message: string): void;
 }
 
-class BaseMessageNotifier implements Notifier {
+class DatabaseMessageNotifier implements Notifier {
   send(message: string): void {
-    console.log("Sending message: " + message);
+    console.log("Writing message in DB: " + message);
   }
 }
 
@@ -72,7 +72,7 @@ class WhatsAppNotificationDecorator extends NotifierDecorator {
   const notifier = new EmailNotifierDecorator(
     new SmsNotifierDecorator(
       new SlackNotifierDecarator(
-        new WhatsAppNotificationDecorator(new BaseMessageNotifier())
+        new WhatsAppNotificationDecorator(new DatabaseMessageNotifier())
       )
     )
   );
