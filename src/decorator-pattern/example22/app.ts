@@ -1,21 +1,52 @@
 interface InputStream {
   read(): number;
+  readAllBytes(): Uint8Array;
 }
 
 class FileInputStream implements InputStream {
+  private readonly fileName: string;
+
+  constructor(fileName: string) {
+    this.fileName = fileName;
+  }
+
   read(): number {
+    throw new Error("Method not implemented.");
+  }
+
+  readAllBytes(): Uint8Array {
     throw new Error("Method not implemented.");
   }
 }
 
 class ByteArrayInputStream implements InputStream {
+  private readonly buf: Uint8Array;
+  private offset: number;
+  private readonly length: number;
+
+  constructor(buf: Uint8Array, offset: number = 0, length: number = 1) {
+    this.buf = buf;
+    this.offset = offset;
+    this.length = length;
+  }
+
   read(): number {
-    throw new Error("Method not implemented.");
+    const result = this.buf.at(this.offset++);
+
+    return result || -1;
+  }
+
+  readAllBytes(): Uint8Array {
+    return this.buf;
   }
 }
 
 class StringBufferInputStream implements InputStream {
   read(): number {
+    throw new Error("Method not implemented.");
+  }
+
+  readAllBytes(): Uint8Array {
     throw new Error("Method not implemented.");
   }
 }
@@ -24,16 +55,28 @@ class ObjectInputStream implements InputStream {
   read(): number {
     throw new Error("Method not implemented.");
   }
+
+  readAllBytes(): Uint8Array {
+    throw new Error("Method not implemented.");
+  }
 }
 
 class PipedInputStream implements InputStream {
   read(): number {
     throw new Error("Method not implemented.");
   }
+
+  readAllBytes(): Uint8Array {
+    throw new Error("Method not implemented.");
+  }
 }
 
 class SequenceInputStream implements InputStream {
   read(): number {
+    throw new Error("Method not implemented.");
+  }
+
+  readAllBytes(): Uint8Array {
     throw new Error("Method not implemented.");
   }
 }
@@ -47,6 +90,10 @@ abstract class FilterInputStream implements InputStream {
   read(): number {
     return this.inputStream.read();
   }
+
+  readAllBytes(): Uint8Array {
+    return this.inputStream.readAllBytes();
+  }
 }
 
 class DataInputStream extends FilterInputStream {
@@ -57,14 +104,26 @@ class DataInputStream extends FilterInputStream {
   read(): number {
     throw new Error("Method not implemented.");
   }
+
+  readAllBytes(): Uint8Array {
+    throw new Error("Method not implemented.");
+  }
 }
 
 class BufferedInputStream extends FilterInputStream {
-  constructor(inputStream: InputStream) {
+  private readonly size?: number;
+
+  constructor(inputStream: InputStream, size?: number) {
     super(inputStream);
+
+    this.size = size;
   }
 
   read(): number {
+    throw new Error("Method not implemented.");
+  }
+
+  readAllBytes(): Uint8Array {
     throw new Error("Method not implemented.");
   }
 }
@@ -77,6 +136,10 @@ class LineNumberInputStream extends FilterInputStream {
   read(): number {
     throw new Error("Method not implemented.");
   }
+
+  readAllBytes(): Uint8Array {
+    throw new Error("Method not implemented.");
+  }
 }
 
 class PushbackInputStream extends FilterInputStream {
@@ -87,6 +150,62 @@ class PushbackInputStream extends FilterInputStream {
   read(): number {
     throw new Error("Method not implemented.");
   }
+
+  readAllBytes(): Uint8Array {
+    throw new Error("Method not implemented.");
+  }
 }
+
+// (function () {
+//   const a1 = new DataInputStream(
+//     new BufferedInputStream(new FileInputStream("input.txt"))
+//   );
+// })();
+
+(function () {
+  const originalString = "Hello World";
+
+  const encoder = new TextEncoder();
+
+  const stringByteArray = encoder.encode(originalString);
+
+  const str = String.fromCharCode(...stringByteArray);
+
+  console.log(str);
+})();
+
+(function () {
+  const originalString = "Hello World";
+
+  const encoder = new TextEncoder();
+
+  const stringByteArray = encoder.encode(originalString);
+
+  const inputStream = new ByteArrayInputStream(stringByteArray);
+
+  const str = String.fromCharCode(...inputStream.readAllBytes());
+
+  console.log(str);
+})();
+
+(function () {
+  const originalString = "Hello World";
+
+  const encoder = new TextEncoder();
+
+  const stringByteArray = encoder.encode(originalString);
+
+  const inputStream = new ByteArrayInputStream(stringByteArray);
+
+  let k = 0;
+  while ((k = inputStream.read()) !== -1) {
+    console.log(
+      "ASCII value of Character is:" +
+        k +
+        "; Special character is: " +
+        String.fromCharCode(k)
+    );
+  }
+})();
 
 export {};
