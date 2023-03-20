@@ -108,6 +108,18 @@ class DataInputStream extends FilterInputStream {
   readAllBytes(): Uint8Array {
     throw new Error("Method not implemented.");
   }
+
+  readBoolean(): boolean {
+    throw new Error("Method not implemented.");
+  }
+
+  readInt(): number {
+    throw new Error("Method not implemented.");
+  }
+
+  readLine(): string {
+    throw new Error("Method not implemented.");
+  }
 }
 
 class BufferedInputStream extends FilterInputStream {
@@ -156,12 +168,6 @@ class PushbackInputStream extends FilterInputStream {
   }
 }
 
-// (function () {
-//   const a1 = new DataInputStream(
-//     new BufferedInputStream(new FileInputStream("input.txt"))
-//   );
-// })();
-
 (function () {
   const originalString = "Hello World";
 
@@ -206,6 +212,16 @@ class PushbackInputStream extends FilterInputStream {
         String.fromCharCode(k)
     );
   }
+})();
+
+(function () {
+  const dataInputStream = new DataInputStream(
+    new BufferedInputStream(new FileInputStream("myTextFile.txt"))
+  );
+
+  const v1 = dataInputStream.readInt();
+  const v2 = dataInputStream.readLine();
+  const v3 = dataInputStream.readBoolean();
 })();
 
 export {};
