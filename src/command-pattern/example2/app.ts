@@ -3,66 +3,29 @@ interface Command {
   execute(): void;
 }
 
-class CopyCommand implements Command {
-  readonly name: string = "copy";
-  private readonly app: TextEditorApplication;
-  private readonly selectedText: string;
+// Receiver
+class TextEditorApplication {
+  private clipboard: string = "";
+  private backup: string = "";
 
-  constructor(app: TextEditorApplication, selectedText: string) {
-    this.app = app;
-    this.selectedText = selectedText;
+  getClipboard() {
+    return this.clipboard;
   }
 
-  execute(): void {
-    console.log("Copy Selected Text: " + this.selectedText);
-    this.app.setClipboard(this.selectedText);
-  }
-}
-
-class PasteCommand implements Command {
-  readonly name: string = "paste";
-  private readonly app: TextEditorApplication;
-
-  constructor(app: TextEditorApplication) {
-    this.app = app;
+  setClipboard(clipboard: string) {
+    this.clipboard = clipboard;
   }
 
-  execute(): void {
-    const pasteText = this.app.getClipboard();
-
-    console.log("Paste Copied Text: " + pasteText);
-    this.app.backupClipboard();
-    this.app.setClipboard(pasteText);
-  }
-}
-
-class UndoCommand implements Command {
-  readonly name: string = "undo";
-  private readonly app: TextEditorApplication;
-
-  constructor(app: TextEditorApplication) {
-    this.app = app;
+  backupClipboard() {
+    this.backup = this.clipboard;
   }
 
-  execute(): void {
-    this.app.resetClipboard();
-
-    console.log("Undo Text: " + this.app.getClipboard());
-  }
-}
-
-class RedoCommand implements Command {
-  readonly name: string = "redo";
-  private readonly app: TextEditorApplication;
-
-  constructor(app: TextEditorApplication) {
-    this.app = app;
+  setClipboardFromBackup() {
+    this.clipboard = this.backup;
   }
 
-  execute(): void {
-    this.app.setClipboardFromBackup();
-
-    console.log("Redo from Backup: " + this.app.getClipboard());
+  resetClipboard() {
+    this.clipboard = "";
   }
 }
 
@@ -104,66 +67,112 @@ class Shortcut {
   }
 }
 
-// Receiver
-class TextEditorApplication {
-  private clipboard: string = "";
-  private backup: string = "";
+// Command
+class CopyCommand implements Command {
+  readonly name: string = "copy";
+  private readonly app: TextEditorApplication;
+  private readonly selectedText: string;
 
-  getClipboard() {
-    return this.clipboard;
+  constructor(app: TextEditorApplication, selectedText: string) {
+    this.app = app;
+    this.selectedText = selectedText;
   }
 
-  setClipboard(clipboard: string) {
-    this.clipboard = clipboard;
-  }
-
-  backupClipboard() {
-    this.backup = this.clipboard;
-  }
-
-  setClipboardFromBackup() {
-    this.clipboard = this.backup;
-  }
-
-  resetClipboard() {
-    this.clipboard = "";
+  execute(): void {
+    console.log("Copy Selected Text: " + this.selectedText);
+    this.app.setClipboard(this.selectedText);
   }
 }
 
-(function () {
-  const menu = new Menu();
-  const shortcut = new Shortcut();
-  const textEditorApp = new TextEditorApplication();
+// Command
+class PasteCommand implements Command {
+  readonly name: string = "paste";
+  private readonly app: TextEditorApplication;
 
-  const copyCommand = new CopyCommand(textEditorApp, "Hello World");
-  const pasteCommand = new PasteCommand(textEditorApp);
-  const undoCommand = new UndoCommand(textEditorApp);
-  const redoCommand = new RedoCommand(textEditorApp);
+  constructor(app: TextEditorApplication) {
+    this.app = app;
+  }
 
-  menu.setCommand("copy", copyCommand);
-  menu.setCommand("paste", pasteCommand);
-  menu.setCommand("undo", undoCommand);
-  menu.setCommand("redo", redoCommand);
+  execute(): void {
+    const pasteText = this.app.getClipboard();
 
-  shortcut.setCommand("CTRL+C", copyCommand);
-  shortcut.setCommand("CTRL+V", pasteCommand);
-  shortcut.setCommand("CTRL+Z", undoCommand);
-  shortcut.setCommand("CTRL+SHIFT+Z", redoCommand);
+    console.log("Paste Copied Text: " + pasteText);
+    this.app.backupClipboard();
+    this.app.setClipboard(pasteText);
+  }
+}
 
-  menu.click("copy");
-  menu.click("paste");
-  menu.click("undo");
-  menu.click("redo");
+// Command
+class UndoCommand implements Command {
+  readonly name: string = "undo";
+  private readonly app: TextEditorApplication;
 
-  shortcut.keyPress("CTRL+C");
-  shortcut.keyPress("CTRL+V");
-  shortcut.keyPress("CTRL+Z");
-  shortcut.keyPress("CTRL+SHIFT+Z");
+  constructor(app: TextEditorApplication) {
+    this.app = app;
+  }
 
-  menu.click("copy");
-  shortcut.keyPress("CTRL+V");
-  menu.click("undo");
-  shortcut.keyPress("CTRL+SHIFT+Z");
-})();
+  execute(): void {
+    this.app.resetClipboard();
+
+    console.log("Undo Text: " + this.app.getClipboard());
+  }
+}
+
+// Command
+class RedoCommand implements Command {
+  readonly name: string = "redo";
+  private readonly app: TextEditorApplication;
+
+  constructor(app: TextEditorApplication) {
+    this.app = app;
+  }
+
+  execute(): void {
+    this.app.setClipboardFromBackup();
+
+    console.log("Redo from Backup: " + this.app.getClipboard());
+  }
+}
+
+// Client
+class CommandClient {
+  static main() {
+    const menu = new Menu();
+    const shortcut = new Shortcut();
+    const textEditorApp = new TextEditorApplication();
+
+    const copyCommand = new CopyCommand(textEditorApp, "Hello World");
+    const pasteCommand = new PasteCommand(textEditorApp);
+    const undoCommand = new UndoCommand(textEditorApp);
+    const redoCommand = new RedoCommand(textEditorApp);
+
+    menu.setCommand("copy", copyCommand);
+    menu.setCommand("paste", pasteCommand);
+    menu.setCommand("undo", undoCommand);
+    menu.setCommand("redo", redoCommand);
+
+    shortcut.setCommand("CTRL+C", copyCommand);
+    shortcut.setCommand("CTRL+V", pasteCommand);
+    shortcut.setCommand("CTRL+Z", undoCommand);
+    shortcut.setCommand("CTRL+SHIFT+Z", redoCommand);
+
+    menu.click("copy");
+    menu.click("paste");
+    menu.click("undo");
+    menu.click("redo");
+
+    shortcut.keyPress("CTRL+C");
+    shortcut.keyPress("CTRL+V");
+    shortcut.keyPress("CTRL+Z");
+    shortcut.keyPress("CTRL+SHIFT+Z");
+
+    menu.click("copy");
+    shortcut.keyPress("CTRL+V");
+    menu.click("undo");
+    shortcut.keyPress("CTRL+SHIFT+Z");
+  }
+}
+
+CommandClient.main();
 
 export {};
