@@ -19,6 +19,10 @@ class Math {
   divide(a: number, b: number) {
     return a / b;
   }
+
+  mod(a: number, b: number) {
+    return a % b;
+  }
 }
 
 // Sender/Invoker
@@ -41,24 +45,37 @@ class Calculator {
 }
 
 // Command
-class AddCommand implements Command {
+class MathCommand implements Command {
+  private readonly operation: string;
   private readonly math: Math;
   private readonly a: number;
   private readonly b: number;
 
-  constructor(math: Math, a: number, b: number) {
+  constructor(operation: string, math: Math, a: number, b: number) {
+    this.operation = operation;
     this.math = math;
     this.a = a;
     this.b = b;
   }
 
   execute(): number {
-    return this.math.add(this.a, this.b);
+    switch (this.operation) {
+      case "+":
+        return this.math.add(this.a, this.b);
+      case "-":
+        return this.math.subtract(this.a, this.b);
+      case "*":
+        return this.math.multiply(this.a, this.b);
+      case "/":
+        return this.math.divide(this.a, this.b);
+      default:
+        throw new Error(this.operation + " operation is not supported");
+    }
   }
 }
 
 // Command
-class SubtractCommand implements Command {
+class ModCommand implements Command {
   private readonly math: Math;
   private readonly a: number;
   private readonly b: number;
@@ -70,41 +87,7 @@ class SubtractCommand implements Command {
   }
 
   execute(): number {
-    return this.math.subtract(this.a, this.b);
-  }
-}
-
-// Command
-class MultiplyCommand implements Command {
-  private readonly math: Math;
-  private readonly a: number;
-  private readonly b: number;
-
-  constructor(math: Math, a: number, b: number) {
-    this.math = math;
-    this.a = a;
-    this.b = b;
-  }
-
-  execute(): number {
-    return this.math.multiply(this.a, this.b);
-  }
-}
-
-// Command
-class DivideCommand implements Command {
-  private readonly math: Math;
-  private readonly a: number;
-  private readonly b: number;
-
-  constructor(math: Math, a: number, b: number) {
-    this.math = math;
-    this.a = a;
-    this.b = b;
-  }
-
-  execute(): number {
-    return this.math.divide(this.a, this.b);
+    return this.math.mod(this.a, this.b);
   }
 }
 
@@ -115,13 +98,15 @@ class CommandClient {
 
     const calculator = new Calculator();
 
-    calculator.addCommand(new AddCommand(math, 1, 2));
+    calculator.addCommand(new MathCommand("+", math, 1, 2));
 
-    calculator.addCommand(new AddCommand(math, 3, 4));
+    calculator.addCommand(new MathCommand("+", math, 3, 4));
 
-    calculator.addCommand(new MultiplyCommand(math, 2, 2));
+    calculator.addCommand(new MathCommand("*", math, 2, 2));
 
-    calculator.addCommand(new DivideCommand(math, 9, 3));
+    calculator.addCommand(new MathCommand("/", math, 9, 3));
+
+    calculator.addCommand(new ModCommand(math, 5, 2));
 
     const sum = calculator.sum();
 

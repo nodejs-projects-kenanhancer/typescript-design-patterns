@@ -7,6 +7,7 @@ interface Command {
   execute(): void;
 }
 
+// Receiver
 class Light implements Switchable {
   private static LIGHT_ON = "The light is on!";
   private static LIGHT_OFF = "The light is off!";
@@ -33,30 +34,7 @@ class Light implements Switchable {
   }
 }
 
-class SwitchOnCommand implements Command {
-  private readonly switchable: Switchable;
-
-  constructor(switchable: Switchable) {
-    this.switchable = switchable;
-  }
-
-  execute(): void {
-    this.switchable.switchOn();
-  }
-}
-
-class SwitchOffCommand implements Command {
-  private readonly switchable: Switchable;
-
-  constructor(switchable: Switchable) {
-    this.switchable = switchable;
-  }
-
-  execute(): void {
-    this.switchable.switchOff();
-  }
-}
-
+// Sender/Invoker
 class SwitchBox {
   private readonly switchOnCommand: Command;
   private readonly switchOffCommand: Command;
@@ -75,25 +53,57 @@ class SwitchBox {
   }
 }
 
-(function () {
-  const light: Switchable = new Light();
+// Command
+class SwitchOnCommand implements Command {
+  private readonly switchable: Switchable;
 
-  const switchOnCommand: Command = new SwitchOnCommand(light);
-  const switchOffCommand: Command = new SwitchOffCommand(light);
+  constructor(switchable: Switchable) {
+    this.switchable = switchable;
+  }
 
-  const switchBox = new SwitchBox(switchOnCommand, switchOffCommand);
+  execute(): void {
+    this.switchable.switchOn();
+  }
+}
 
-  switchBox.open();
+// Command
+class SwitchOffCommand implements Command {
+  private readonly switchable: Switchable;
 
-  switchBox.open();
+  constructor(switchable: Switchable) {
+    this.switchable = switchable;
+  }
 
-  switchBox.close();
+  execute(): void {
+    this.switchable.switchOff();
+  }
+}
 
-  switchBox.close();
+// Client
+class CommandClient {
+  static main() {
+    const light: Switchable = new Light();
 
-  switchBox.open();
+    const switchOnCommand: Command = new SwitchOnCommand(light);
 
-  switchBox.close();
-})();
+    const switchOffCommand: Command = new SwitchOffCommand(light);
+
+    const switchBox = new SwitchBox(switchOnCommand, switchOffCommand);
+
+    switchBox.open();
+
+    switchBox.open();
+
+    switchBox.close();
+
+    switchBox.close();
+
+    switchBox.open();
+
+    switchBox.close();
+  }
+}
+
+CommandClient.main();
 
 export {};
