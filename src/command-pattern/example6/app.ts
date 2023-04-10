@@ -2,77 +2,144 @@ interface Command {
   execute(): void;
 }
 
+// Receiver Contract
+interface Switchable {
+  switchOn(): void;
+  switchOff(): void;
+}
+
 // Receiver
-class Light {
-  turnOn() {
+class Light implements Switchable {
+  switchOn() {
     console.log("The light is on");
   }
 
-  turnOff() {
+  switchOff() {
     console.log("The light is off");
   }
 }
 
+// Receiver
+class Television implements Switchable {
+  switchOn(): void {
+    console.log("The television is on");
+  }
+
+  switchOff(): void {
+    console.log("The television is off");
+  }
+}
+
+// Receiver
+class Radio implements Switchable {
+  switchOn(): void {
+    console.log("The radio is on");
+  }
+
+  switchOff(): void {
+    console.log("The radio is off");
+  }
+}
+
 // Sender/Invoker
-class Switch {
-  private readonly flipUpCommand: Command;
-  private readonly flipDownCommand: Command;
+class SwitchBox {
+  private readonly switchOnCommand: Command;
+  private readonly switchOffCommand: Command;
 
-  constructor(flipUpCommand: Command, flipDownCommand: Command) {
-    this.flipUpCommand = flipUpCommand;
-    this.flipDownCommand = flipDownCommand;
+  constructor(switchOnCommand: Command, switchOffCommand: Command) {
+    this.switchOnCommand = switchOnCommand;
+    this.switchOffCommand = switchOffCommand;
   }
 
-  turnOn() {
-    this.flipUpCommand.execute();
+  flipUp() {
+    this.switchOnCommand.execute();
   }
 
-  turnOff() {
-    this.flipDownCommand.execute();
+  flipDown() {
+    this.switchOffCommand.execute();
+  }
+}
+
+// Sender/Invoker
+class RemoteControl {
+  private readonly switchOnCommand: Command;
+  private readonly switchOffCommand: Command;
+
+  constructor(switchOnCommand: Command, switchOffCommand: Command) {
+    this.switchOnCommand = switchOnCommand;
+    this.switchOffCommand = switchOffCommand;
+  }
+
+  pressOn() {
+    this.switchOnCommand.execute();
+  }
+
+  pressOff() {
+    this.switchOffCommand.execute();
   }
 }
 
 // Command
-class FlipUpCommand implements Command {
-  private readonly light: Light;
+class LightOnCommand implements Command {
+  private readonly switchable: Switchable;
 
-  constructor(light: Light) {
-    this.light = light;
+  constructor(switchable: Switchable) {
+    this.switchable = switchable;
   }
 
   execute(): void {
-    this.light.turnOn();
+    this.switchable.switchOn();
   }
 }
 
 // Command
-class FlipDownCommand implements Command {
-  private readonly light: Light;
+class LightOffCommand implements Command {
+  private readonly switchable: Switchable;
 
-  constructor(light: Light) {
-    this.light = light;
+  constructor(switchable: Switchable) {
+    this.switchable = switchable;
   }
 
   execute(): void {
-    this.light.turnOff();
+    this.switchable.switchOff();
   }
 }
 
 // Client
 class CommandClient {
   static main() {
-    const light = new Light();
+    const light: Switchable = new Light();
 
-    const flipUpCommand = new FlipUpCommand(light);
+    const television: Switchable = new Television();
 
-    const flipDownCommand = new FlipDownCommand(light);
+    const radio: Switchable = new Radio();
 
-    const switchBox = new Switch(flipUpCommand, flipDownCommand);
+    CommandClient.test(light);
 
-    switchBox.turnOn();
+    CommandClient.test(television);
 
-    switchBox.turnOff();
+    CommandClient.test(radio);
+  }
+
+  static test(switchable: Switchable) {
+    const turnOnCommand: Command = new LightOnCommand(switchable);
+
+    const turnOffCommand: Command = new LightOffCommand(switchable);
+
+    const switchBox = new SwitchBox(turnOnCommand, turnOffCommand);
+
+    const remoteControl = new RemoteControl(turnOnCommand, turnOffCommand);
+
+    switchBox.flipUp();
+
+    switchBox.flipDown();
+
+    remoteControl.pressOn();
+
+    remoteControl.pressOff();
   }
 }
+
+CommandClient.main();
 
 export {};

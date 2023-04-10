@@ -1,10 +1,11 @@
+interface Command {
+  execute(): void;
+}
+
+// Receiver Contract
 interface Switchable {
   switchOn(): void;
   switchOff(): void;
-}
-
-interface Command {
-  execute(): void;
 }
 
 // Receiver
