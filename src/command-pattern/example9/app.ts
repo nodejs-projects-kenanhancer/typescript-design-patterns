@@ -1,77 +1,28 @@
+import {
+  ASCII,
+  ASCII_PRINTABLE_KEYS,
+  ASCII_CONTROL_KEYS,
+  ASCII_UPPERCASE_ALPHABET_KEYS,
+} from "./ascii";
+
+type ShortCutKeys =
+  | `${ASCII_CONTROL_KEYS}+${ASCII_UPPERCASE_ALPHABET_KEYS}`
+  | `${ASCII_CONTROL_KEYS}+${ASCII_CONTROL_KEYS}+${ASCII_UPPERCASE_ALPHABET_KEYS}`;
+
 interface Command {
   execute(): void;
   undo(): void;
   redo(): void;
 }
 
-enum Keys {
-  A = "A",
-  B = "B",
-  C = "C",
-  D = "D",
-  E = "E",
-  F = "F",
-  G = "G",
-  H = "H",
-  I = "I",
-  J = "J",
-  K = "K",
-  L = "L",
-  M = "M",
-  N = "N",
-  O = "O",
-  P = "P",
-  Q = "Q",
-  R = "R",
-  S = "S",
-  T = "T",
-  U = "U",
-  V = "V",
-  W = "W",
-  X = "X",
-  Y = "Y",
-  Z = "Z",
-  Hyphen = "-",
-  Underscore = "_",
-  Asterisk = "*",
-  Plus = "+",
-  Exclamation = "!",
-  Percent = "%",
-  $ = "$",
-  OpenParanthesis = "(",
-  CloseParanthesis = ")",
-  OpenBrace = "{",
-  CloseBrace = "}",
-  OpenBracket = "[",
-  CloseBracket = "]",
-  Esc = "Esc",
-  Control = "Control",
-  Shift = "Shift",
-  Alt = "Alt",
-  Space = "Space",
-  Back = "Back",
-  F1 = "F1",
-  F2 = "F2",
-  F3 = "F3",
-  F4 = "F4",
-  F5 = "F5",
-  F6 = "F6",
-  F7 = "F7",
-  F8 = "F8",
-  F9 = "F9",
-  F10 = "F10",
-  F11 = "F11",
-  F12 = "F12",
-}
-
 class KeyEventArg {
-  readonly KeyCode: Keys;
+  readonly KeyCode: ASCII_PRINTABLE_KEYS;
   readonly Alt: boolean;
   readonly Control: boolean;
   readonly Shift: boolean;
 
   constructor(
-    keyCode: Keys,
+    keyCode: ASCII_PRINTABLE_KEYS,
     shift: boolean = false,
     alt: boolean = false,
     control: boolean = false
@@ -80,6 +31,58 @@ class KeyEventArg {
     this.Alt = alt;
     this.Control = control;
     this.Shift = shift;
+  }
+
+  toString() {
+    return [
+      ...((this.Control && ["CTRL"]) || []),
+      ...((this.Alt && ["ALT"]) || []),
+      ...((this.Shift && ["SHIFT"]) || []),
+      this.KeyCode.toUpperCase(),
+    ].join("+");
+  }
+
+  static toKeyEventArg(keys: string) {
+    const keyArray = keys.toLowerCase().split("+");
+
+    if (keyArray.length === 0) {
+      throw new Error("Keys length can be min 1");
+    }
+
+    if (keyArray.length > 4) {
+      throw new Error("Keys length can be max 4");
+    }
+
+    const ctrl = keyArray.indexOf("ctrl");
+    const shift = keyArray.indexOf("shift");
+    const alt = keyArray.indexOf("alt");
+
+    if (ctrl > -1) {
+      keyArray.splice(ctrl, 1);
+    }
+
+    if (shift > -1) {
+      keyArray.splice(shift, 1);
+    }
+
+    if (alt > -1) {
+      keyArray.splice(alt, 1);
+    }
+
+    const key = keyArray.pop();
+
+    if (key) {
+      const keyEventArg = new KeyEventArg(
+        key as ASCII_PRINTABLE_KEYS,
+        shift > -1,
+        alt > -1,
+        ctrl > -1
+      );
+
+      return keyEventArg;
+    }
+
+    throw new Error("Not Validated");
   }
 }
 
@@ -114,6 +117,8 @@ interface TextEditor {
   insert(text: string, cursorPosition: number): void;
   replace(oldText: string, newText: string, cursorPosition: number): void;
   delete(cursorPosition: number, length: number): void;
+  backup(): Memento;
+  restore(memento: Memento): void;
 }
 
 // Receiver
@@ -123,6 +128,7 @@ class TextEditorApplication implements TextEditor {
   private selectedText: string = "";
   private cursorPosition: number = -1;
   private mouseKeyPosition: MouseKeyPosition = "click";
+  private history: Memento[] = [];
 
   getText() {
     return this.text;
@@ -179,95 +185,162 @@ class TextEditorApplication implements TextEditor {
       this.text.slice(0, cursorPosition) +
       this.text.slice(cursorPosition + length);
   }
+
+  backup() {
+    const memento: Memento = new Memento(this);
+
+    this.history.push(memento);
+
+    return memento;
+  }
+
+  restore(memento: Memento) {
+    this.text = memento.text;
+    this.clipboard = memento.clipboard;
+    this.selectedText = memento.selectedText;
+    this.cursorPosition = memento.cursorPosition;
+    this.mouseKeyPosition = memento.mouseKeyPosition;
+  }
+}
+
+// Memento
+class Memento {
+  readonly text: string = "";
+  readonly clipboard: string = "";
+  readonly selectedText: string = "";
+  readonly cursorPosition: number = -1;
+  readonly mouseKeyPosition: MouseKeyPosition = "click";
+
+  constructor(textEditor: TextEditor) {
+    this.text = textEditor.getText();
+    this.clipboard = textEditor.getClipboard();
+    this.selectedText = textEditor.getSelectedText();
+    this.cursorPosition = textEditor.getCursorPosition();
+    this.mouseKeyPosition = textEditor.getMouseKeyPosition();
+  }
 }
 
 // Sender/Invoker
-class ContextMenu {
-  private readonly commands = new Map<string, Command>();
+type MouseClickCallback = (cursorPosition: number) => Command;
+type MouseKeyDownUpCallback = (cursorPosition: number) => Command;
+type KeyPressCallback = (keyEventArg: KeyEventArg) => Command;
 
-  setCommand(operation: string, onMouseClick: Command) {
-    this.commands.set(operation, onMouseClick);
+class ContextMenu {
+  private readonly commands = new Map<string, MouseClickCallback>();
+
+  addCommand(operation: string, onMouseClickCallback: MouseClickCallback) {
+    this.commands.set(operation, onMouseClickCallback);
   }
 
   click(operation: string) {
-    const command = this.commands.get(operation);
+    const commandCallback = this.commands.get(operation);
 
-    if (command) {
-      command.execute();
+    if (commandCallback) {
+      const command = commandCallback(-1);
+
+      if (command) {
+        command.execute();
+      }
     }
   }
 }
 
 class Shortcut {
-  private readonly shortcutKeys = new Map<string, Command>();
+  private readonly shortcutKeys = new Map<string, KeyPressCallback>();
 
-  setCommand(keys: string, onKeyPress: Command) {
-    this.shortcutKeys.set(keys, onKeyPress);
+  setCommand(shortcutKeys: ShortCutKeys, onKeyPressCallback: KeyPressCallback) {
+    // const keyEventArg = KeyEventArg.toKeyEventArg(shortcutKeys);
+    // const keys = keyEventArg.toString();
+    this.shortcutKeys.set(shortcutKeys, onKeyPressCallback);
   }
 
-  keyPress(keys: string) {
-    const command = this.shortcutKeys.get(keys);
+  keyPress(keyEventArg: KeyEventArg) {
+    const keys = keyEventArg.toString();
+    const commandCallback = this.shortcutKeys.get(keys);
 
-    if (command) {
-      command.execute();
+    if (commandCallback) {
+      const command = commandCallback(keyEventArg);
+
+      if (command) {
+        command.execute();
+      }
     }
   }
 }
 
-class TextEditorUI {
+class KenanTextEditorUI {
   private readonly textEditor: TextEditor;
   private readonly contextMenu: ContextMenu;
   private readonly shortcut: Shortcut;
-  private readonly onKeyPress: KeyPressCommand;
-  private readonly onMouseClick: MouseClickCommand;
-  private readonly onMouseKeyDownUp: MouseKeyDownUpCommand;
+  private readonly onKeyPressCallback: KeyPressCallback;
+  private readonly onMouseClickCallback: MouseClickCallback;
+  private readonly onMouseKeyDownCallback: MouseKeyDownUpCallback;
+  private readonly onMouseKeyUpCallback: MouseKeyDownUpCallback;
 
   constructor(
     textEditor: TextEditor,
     contextMenu: ContextMenu,
     shortcut: Shortcut,
-    onKeyPress: KeyPressCommand,
-    onMouseClick: MouseClickCommand,
-    onMouseKeyDownUp: MouseKeyDownUpCommand
+    onKeyPressCallback: KeyPressCallback,
+    onMouseClickCallback: MouseClickCallback,
+    onMouseKeyDownCallback: MouseKeyDownUpCallback,
+    onMouseKeyUpCallback: MouseKeyDownUpCallback
   ) {
     this.textEditor = textEditor;
     this.contextMenu = contextMenu;
     this.shortcut = shortcut;
-    this.onKeyPress = onKeyPress;
-    this.onMouseClick = onMouseClick;
-    this.onMouseKeyDownUp = onMouseKeyDownUp;
+    this.onKeyPressCallback = onKeyPressCallback;
+    this.onMouseClickCallback = onMouseClickCallback;
+    this.onMouseKeyDownCallback = onMouseKeyDownCallback;
+    this.onMouseKeyUpCallback = onMouseKeyUpCallback;
   }
 
-  keyPress(key: Keys, shift: boolean = false) {
-    this.onKeyPress.executeKeyPress(new KeyEventArg(key, shift));
+  keyPress(key: ASCII_PRINTABLE_KEYS) {
+    const command = this.onKeyPressCallback(new KeyEventArg(key));
+
+    if (command) {
+      command.execute();
+    }
   }
 
   mouseClick(cursorPosition: number) {
-    this.onMouseClick.executeMouseClick(cursorPosition);
+    const command = this.onMouseClickCallback(cursorPosition);
+
+    if (command) {
+      command.execute();
+    }
   }
 
   mouseKeyDown(cursorPosition: number) {
-    this.onMouseKeyDownUp.executeMouseKeyDownUp(cursorPosition, "down");
+    const command = this.onMouseKeyDownCallback(cursorPosition);
+
+    if (command) {
+      command.execute();
+    }
   }
 
   mouseKeyUp(cursorPosition: number) {
-    this.onMouseKeyDownUp.executeMouseKeyDownUp(cursorPosition, "up");
+    const command = this.onMouseKeyUpCallback(cursorPosition);
+
+    if (command) {
+      command.execute();
+    }
   }
 
   selectText(fromPosition: number, toPosition: number) {
-    const text = this.textEditor.getText();
+    this.mouseKeyDown(fromPosition);
 
-    const selectedText = text.substring(fromPosition, toPosition);
-
-    this.textEditor.setSelectedText(selectedText);
+    this.mouseKeyUp(toPosition);
   }
 
   clickContextMenu(operation: string) {
     this.contextMenu.click(operation);
   }
 
-  keyPressShortcut(keys: string) {
-    this.shortcut.keyPress(keys);
+  keyPressShortcut(shortcutKeys: ShortCutKeys) {
+    const keyEventArg = KeyEventArg.toKeyEventArg(shortcutKeys);
+
+    this.shortcut.keyPress(keyEventArg);
   }
 
   keyPressSpecialKeys(keys: string) {}
@@ -280,25 +353,21 @@ class TextEditorUI {
 // Command
 class CopyCommand implements Command {
   private readonly textEditor: TextEditor;
-  private readonly clipboard: string;
   private readonly selectedText: string;
+  private readonly memento: Memento;
 
-  constructor(textEditor: TextEditor) {
+  constructor(textEditor: TextEditor, selectedText: string) {
     this.textEditor = textEditor;
-    this.clipboard = this.textEditor.getClipboard();
-    this.selectedText = this.textEditor.getSelectedText();
+    this.selectedText = selectedText;
+    this.memento = textEditor.backup();
   }
 
   execute(): void {
-    if (this.selectedText) {
-      this.textEditor.setClipboard(this.selectedText);
-    }
+    this.textEditor.setClipboard(this.selectedText);
   }
 
   undo(): void {
-    if (this.clipboard) {
-      this.textEditor.setClipboard(this.clipboard);
-    }
+    this.textEditor.restore(this.memento);
   }
 
   redo(): void {
@@ -309,15 +378,19 @@ class CopyCommand implements Command {
 // Command
 class CutCommand implements Command {
   private readonly textEditor: TextEditor;
-  private readonly clipboard: string;
   private readonly selectedText: string;
   private readonly cursorPosition: number;
+  private readonly memento: Memento;
 
-  constructor(textEditor: TextEditor) {
+  constructor(
+    textEditor: TextEditor,
+    selectedText: string,
+    cursorPosition: number
+  ) {
     this.textEditor = textEditor;
-    this.clipboard = this.textEditor.getClipboard();
-    this.selectedText = this.textEditor.getSelectedText();
-    this.cursorPosition = this.textEditor.getCursorPosition();
+    this.selectedText = selectedText;
+    this.cursorPosition = cursorPosition;
+    this.memento = textEditor.backup();
   }
 
   execute(): void {
@@ -328,10 +401,7 @@ class CutCommand implements Command {
   }
 
   undo(): void {
-    if (this.clipboard) {
-      this.textEditor.setClipboard(this.clipboard);
-      this.textEditor.insert(this.clipboard, this.cursorPosition);
-    }
+    this.textEditor.restore(this.memento);
   }
 
   redo(): void {
@@ -344,23 +414,30 @@ class PasteCommand implements Command {
   private readonly textEditor: TextEditor;
   private readonly clipboard: string;
   private readonly cursorPosition: number;
+  private readonly memento: Memento;
 
-  constructor(textEditor: TextEditor) {
+  constructor(
+    textEditor: TextEditor,
+    clipboard: string,
+    cursorPosition: number
+  ) {
     this.textEditor = textEditor;
-    this.clipboard = textEditor.getClipboard();
-    this.cursorPosition = textEditor.getCursorPosition();
+    this.clipboard = clipboard;
+    this.cursorPosition = cursorPosition;
+    this.memento = textEditor.backup();
   }
 
   execute(): void {
     if (this.clipboard && this.cursorPosition >= 0) {
       this.textEditor.insert(this.clipboard, this.cursorPosition);
+      this.textEditor.setCursorPosition(
+        this.cursorPosition + this.clipboard.length + 1
+      );
     }
   }
 
   undo(): void {
-    if (this.clipboard) {
-      this.textEditor.delete(this.cursorPosition, this.clipboard.length);
-    }
+    this.textEditor.restore(this.memento);
   }
 
   redo(): void {
@@ -369,32 +446,41 @@ class PasteCommand implements Command {
 }
 
 // Command
-class KeyPressedCommand implements KeyPressCommand {
+class KeyPressedCommand implements Command {
   private readonly textEditor: TextEditor;
   private readonly text;
-  private character: string = "";
-  private position: number = -1;
+  private readonly keyEventArg: KeyEventArg;
+  private readonly position: number = -1;
+  private readonly memento: Memento;
 
-  constructor(textEditor: TextEditor) {
+  constructor(textEditor: TextEditor, text: string, keyEventArg: KeyEventArg) {
     this.textEditor = textEditor;
-    this.text = textEditor.getText();
-  }
+    this.text = text;
+    const cursorPosition = textEditor.getCursorPosition();
 
-  executeKeyPress(keyEventArg: KeyEventArg): void {
-    this.position = this.text.length + 1;
-    this.character = keyEventArg.KeyCode;
-
-    this.execute();
+    if (cursorPosition >= 0) {
+      this.position = cursorPosition + this.text.length + 1;
+    } else {
+      this.position = this.text.length + 1;
+    }
+    this.keyEventArg = keyEventArg;
+    this.memento = textEditor.backup();
   }
 
   execute(): void {
-    if (this.character && this.position > 0) {
-      this.textEditor.insert(this.character, this.position);
+    const asciiRecord = ASCII[this.keyEventArg.KeyCode];
+
+    if (asciiRecord) {
+      const character = asciiRecord.symbol;
+
+      if (character && this.position > 0) {
+        this.textEditor.insert(character, this.position);
+      }
     }
   }
 
   undo(): void {
-    this.textEditor.delete(this.position, this.character.length);
+    this.textEditor.restore(this.memento);
   }
 
   redo(): void {
@@ -403,18 +489,15 @@ class KeyPressedCommand implements KeyPressCommand {
 }
 
 // Command
-class MouseClickedCommand implements MouseClickCommand {
+class MouseClickedCommand implements Command {
   private readonly textEditor: TextEditor;
-  private cursorPosition: number = -1;
+  private readonly cursorPosition: number = -1;
+  private readonly memento: Memento;
 
-  constructor(textEditor: TextEditor) {
+  constructor(textEditor: TextEditor, cursorPosition: number) {
     this.textEditor = textEditor;
-  }
-
-  executeMouseClick(cursorPosition: number): void {
     this.cursorPosition = cursorPosition;
-
-    this.execute();
+    this.memento = this.textEditor.backup();
   }
 
   execute(): void {
@@ -425,7 +508,7 @@ class MouseClickedCommand implements MouseClickCommand {
   }
 
   undo(): void {
-    this.textEditor.setMouseKeyPosition("click");
+    this.textEditor.restore(this.memento);
   }
 
   redo(): void {
@@ -434,53 +517,65 @@ class MouseClickedCommand implements MouseClickCommand {
 }
 
 // Command
-class MouseKeyDownUpClickedCommand implements MouseKeyDownUpCommand {
+class MouseKeyDownCommand implements Command {
   private readonly textEditor: TextEditor;
-  private cursorPosition: number = -1;
-  private mouseKeyPosition: "down" | "up" = "up";
-  private prevMouseKeyPosition: MouseKeyPosition;
-  private prevCursorPosition: number;
+  private readonly cursorPosition: number = -1;
+  private readonly memento: Memento;
 
-  constructor(textEditor: TextEditor) {
+  constructor(textEditor: TextEditor, cursorPosition: number) {
     this.textEditor = textEditor;
-    this.prevMouseKeyPosition = this.textEditor.getMouseKeyPosition();
-    this.prevCursorPosition = this.textEditor.getCursorPosition();
-  }
-
-  executeMouseKeyDownUp(
-    cursorPosition: number,
-    mouseKeyPosition: "down" | "up"
-  ): void {
     this.cursorPosition = cursorPosition;
-    this.mouseKeyPosition = mouseKeyPosition;
-
-    this.execute();
+    this.memento = this.textEditor.backup();
   }
 
   execute(): void {
     if (this.cursorPosition >= 0) {
-      if (
-        this.prevMouseKeyPosition === "down" &&
-        this.mouseKeyPosition === "up"
-      ) {
+      this.textEditor.setCursorPosition(this.cursorPosition);
+      this.textEditor.setMouseKeyPosition("down");
+    }
+  }
+
+  undo(): void {
+    this.textEditor.restore(this.memento);
+  }
+
+  redo(): void {
+    this.execute();
+  }
+}
+
+// Command
+class MouseKeyUpCommand implements Command {
+  private readonly textEditor: TextEditor;
+  private readonly cursorPosition: number = -1;
+  private readonly memento: Memento;
+
+  constructor(textEditor: TextEditor, cursorPosition: number) {
+    this.textEditor = textEditor;
+    this.cursorPosition = cursorPosition;
+    this.memento = this.textEditor.backup();
+  }
+
+  execute(): void {
+    if (this.cursorPosition >= 0) {
+      if (this.memento.mouseKeyPosition === "down") {
         const text = this.textEditor.getText();
 
         const selectedText = text.substring(
-          this.prevCursorPosition,
+          this.memento.cursorPosition,
           this.cursorPosition
         );
 
         this.textEditor.setSelectedText(selectedText);
       }
 
-      this.textEditor.setCursorPosition(this.cursorPosition);
-      this.textEditor.setMouseKeyPosition(this.mouseKeyPosition);
+      // this.textEditor.setCursorPosition(this.cursorPosition);
+      this.textEditor.setMouseKeyPosition("up");
     }
   }
 
   undo(): void {
-    this.textEditor.setCursorPosition(this.prevCursorPosition);
-    this.textEditor.setMouseKeyPosition(this.prevMouseKeyPosition);
+    this.textEditor.restore(this.memento);
   }
 
   redo(): void {
@@ -545,67 +640,143 @@ class ReplaceCommand implements Command {
   }
 }
 
+// Factory
+interface TextEditorCommandFactory {
+  getCopyCommand(): Command;
+  getCutCommand(): Command;
+  getPasteCommand(): Command;
+  getKeyPressedCommand(keyEventArg: KeyEventArg): Command;
+  getMouseClickCommand(cursorPosition: number): Command;
+  getMouseKeyDownCommand(cursorPosition: number): Command;
+  getMouseKeyUpCommand(cursorPosition: number): Command;
+}
+
+class KenanTextEditorCommandFactory implements TextEditorCommandFactory {
+  private readonly textEditor: TextEditor;
+
+  constructor(textEditor: TextEditor) {
+    this.textEditor = textEditor;
+  }
+
+  getCopyCommand(): Command {
+    const selectedText = this.textEditor.getSelectedText();
+
+    return new CopyCommand(this.textEditor, selectedText);
+  }
+
+  getCutCommand(): Command {
+    const selectedText = this.textEditor.getSelectedText();
+    const cursorPosition = this.textEditor.getCursorPosition();
+
+    return new CutCommand(this.textEditor, selectedText, cursorPosition);
+  }
+
+  getPasteCommand(): Command {
+    const clipboard = this.textEditor.getClipboard();
+    const cursorPosition = this.textEditor.getCursorPosition();
+
+    return new PasteCommand(this.textEditor, clipboard, cursorPosition);
+  }
+
+  getKeyPressedCommand(keyEventArg: KeyEventArg): Command {
+    const text = this.textEditor.getText();
+
+    return new KeyPressedCommand(this.textEditor, text, keyEventArg);
+  }
+
+  getMouseClickCommand(cursorPosition: number): Command {
+    return new MouseClickedCommand(this.textEditor, cursorPosition);
+  }
+
+  getMouseKeyDownCommand(cursorPosition: number): Command {
+    return new MouseKeyDownCommand(this.textEditor, cursorPosition);
+  }
+
+  getMouseKeyUpCommand(cursorPosition: number): Command {
+    return new MouseKeyUpCommand(this.textEditor, cursorPosition);
+  }
+}
+
 // Client
 class ClientCommand {
   static main() {
     const textEditor: TextEditor = new TextEditorApplication();
 
-    const copyCommand: Command = new CopyCommand(textEditor);
-
-    const cutCommand: Command = new CutCommand(textEditor);
-
-    const pasteCommand: Command = new PasteCommand(textEditor);
-
-    const keyPressCommand: KeyPressCommand = new KeyPressedCommand(textEditor);
-
-    const mouseClickCommand: MouseClickCommand = new MouseClickedCommand(
-      textEditor
-    );
-
-    const mouseUpDownCommand: MouseKeyDownUpCommand =
-      new MouseKeyDownUpClickedCommand(textEditor);
-
-    // const deleteCommand: Command = new DeleteCommand(textEditor, "", 0);
-
-    // const replaceCommand: Command = new ReplaceCommand(textEditor, "", "", 0);
+    const textEditorCommandFactory: TextEditorCommandFactory =
+      new KenanTextEditorCommandFactory(textEditor);
 
     const contextMenu = new ContextMenu();
 
-    contextMenu.setCommand("copy", copyCommand);
+    contextMenu.addCommand(
+      "copy",
+      textEditorCommandFactory.getCopyCommand.bind(textEditorCommandFactory)
+    );
 
-    contextMenu.setCommand("cut", cutCommand);
+    contextMenu.addCommand(
+      "cut",
+      textEditorCommandFactory.getCutCommand.bind(textEditorCommandFactory)
+    );
 
-    contextMenu.setCommand("paste", pasteCommand);
+    contextMenu.addCommand(
+      "paste",
+      textEditorCommandFactory.getPasteCommand.bind(textEditorCommandFactory)
+    );
 
     const shortcut = new Shortcut();
 
-    shortcut.setCommand("CTRL+C", copyCommand);
+    shortcut.setCommand(
+      "CTRL+C",
+      textEditorCommandFactory.getCopyCommand.bind(textEditorCommandFactory)
+    );
 
-    shortcut.setCommand("CTRL+X", cutCommand);
+    shortcut.setCommand(
+      "CTRL+X",
+      textEditorCommandFactory.getCutCommand.bind(textEditorCommandFactory)
+    );
 
-    shortcut.setCommand("CTRL+V", pasteCommand);
+    shortcut.setCommand(
+      "CTRL+V",
+      textEditorCommandFactory.getPasteCommand.bind(textEditorCommandFactory)
+    );
 
-    const ui = new TextEditorUI(
+    const onKeyPressCallback: KeyPressCallback = (keyEventArg) => {
+      return textEditorCommandFactory.getKeyPressedCommand(keyEventArg);
+    };
+
+    const onMouseClickCallback: MouseClickCallback = (cursorPosition) => {
+      return textEditorCommandFactory.getMouseClickCommand(cursorPosition);
+    };
+
+    const onMouseKeyDownCallback: MouseKeyDownUpCallback = (cursorPosition) => {
+      return textEditorCommandFactory.getMouseKeyDownCommand(cursorPosition);
+    };
+
+    const onMouseKeyUpCallback: MouseKeyDownUpCallback = (cursorPosition) => {
+      return textEditorCommandFactory.getMouseKeyUpCommand(cursorPosition);
+    };
+
+    const ui = new KenanTextEditorUI(
       textEditor,
       contextMenu,
       shortcut,
-      keyPressCommand,
-      mouseClickCommand,
-      mouseUpDownCommand
+      onKeyPressCallback,
+      onMouseClickCallback,
+      onMouseKeyDownCallback,
+      onMouseKeyUpCallback
     );
 
-    ui.keyPress(Keys.H, true);
-    ui.keyPress(Keys.E);
-    ui.keyPress(Keys.L);
-    ui.keyPress(Keys.L);
-    ui.keyPress(Keys.O);
-    ui.keyPress(Keys.Space);
-    ui.keyPress(Keys.W, true);
-    ui.keyPress(Keys.O);
-    ui.keyPress(Keys.R);
-    ui.keyPress(Keys.L);
-    ui.keyPress(Keys.D);
-    ui.keyPress(Keys.Exclamation);
+    ui.keyPress("H");
+    ui.keyPress("e");
+    ui.keyPress("l");
+    ui.keyPress("l");
+    ui.keyPress("o");
+    ui.keyPress("SPACE");
+    ui.keyPress("W");
+    ui.keyPress("o");
+    ui.keyPress("r");
+    ui.keyPress("l");
+    ui.keyPress("d");
+    ui.keyPress("!");
 
     ui.mouseKeyDown(0);
 
@@ -617,23 +788,25 @@ class ClientCommand {
 
     ui.keyPressShortcut("CTRL+V");
 
-    ui.keyPress(Keys.Space);
-    ui.keyPress(Keys.J, true);
-    ui.keyPress(Keys.U);
-    ui.keyPress(Keys.P);
-    ui.keyPress(Keys.I);
-    ui.keyPress(Keys.T);
-    ui.keyPress(Keys.E);
-    ui.keyPress(Keys.R);
-    ui.keyPress(Keys.Exclamation);
+    ui.keyPress("SPACE");
+    ui.keyPress("J");
+    ui.keyPress("u");
+    ui.keyPress("p");
+    ui.keyPress("i");
+    ui.keyPress("t");
+    ui.keyPress("e");
+    ui.keyPress("r");
+    ui.keyPress("!");
 
     ui.selectText(12, 17);
 
-    ui.keyPressShortcut("CTRL+C");
+    ui.keyPressShortcut("CTRL+X");
 
-    // ui.clickContextMenu("cut");
+    ui.mouseClick(12);
 
-    // ui.cl;
+    ui.keyPress('H');
+
+    ui.keyPress('i');
 
     ui.print();
   }
