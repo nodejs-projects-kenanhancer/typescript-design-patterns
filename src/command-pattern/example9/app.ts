@@ -804,9 +804,9 @@ class ClientCommand {
 
     ui.mouseClick(12);
 
-    ui.keyPress('H');
+    ui.keyPress("H");
 
-    ui.keyPress('i');
+    ui.keyPress("i");
 
     ui.print();
   }
