@@ -128,7 +128,7 @@ export class KenanTextEditorCommandFactory implements TextEditorCommandFactory {
   }
 
   getUndoCommand(): Command {
-    const command: Command = new UndoCommand(this.textEditorStateHistory);
+    const command: Command = new UndoCommand(this.textEditor, this.textEditorStateHistory);
 
     this.commandHistory.save(command);
 
@@ -136,7 +136,7 @@ export class KenanTextEditorCommandFactory implements TextEditorCommandFactory {
   }
 
   getRedoCommand(): Command {
-    const command: Command = new RedoCommand(this.textEditorStateHistory);
+    const command: Command = new RedoCommand(this.textEditor, this.textEditorStateHistory);
 
     this.commandHistory.save(command);
 

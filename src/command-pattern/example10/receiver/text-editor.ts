@@ -17,5 +17,5 @@ export interface TextEditor {
   replace(oldText: string, newText: string, cursorPosition: number): void;
   delete(cursorPosition: number, length: number): void;
   createSnapshot(): TextEditorState;
-  restore(editorState: TextEditorState): void;
+  restore(textEditorState: TextEditorState): void;
 }

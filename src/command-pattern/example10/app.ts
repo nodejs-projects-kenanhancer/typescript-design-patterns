@@ -76,7 +76,7 @@ class ClientCommand {
 
     ui.keyPress("H");
 
-    ui.clickContextMenu("undo");
+    ui.clickTopMenu("undo");
 
     ui.keyPressShortcut("CTRL+Z"); // Undo
 
@@ -94,7 +94,7 @@ class ClientCommand {
 
     ui.keyPressShortcut("CTRL+SHIFT+Z"); // Redo
 
-    ui.clickContextMenu("redo");
+    ui.clickTopMenu("redo");
 
     // ui.keyPress("i");
 
