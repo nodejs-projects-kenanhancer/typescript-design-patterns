@@ -13,6 +13,8 @@ export type KeyPressCallback = (keyEventArg: KeyEventArg) => Command;
 export * from "./ascii";
 export * from "./key-event-arg";
 export * from "./context-menu";
+export * from "./top-menu";
 export * from "./shortcut";
+export * from "./text-editor-ui";
 export * from "./kenan-text-editor-ui";
 export * from "./command-history";

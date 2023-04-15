@@ -1,20 +1,14 @@
 import {
   KenanTextEditorCommandFactory,
   TextEditorCommandFactory,
+  TextEditorUIFactory,
+  UIFactory,
 } from "./factory";
 import {
   TextEditorStateHistory,
   TextEditorStateHistoryImplementation,
 } from "./memento";
-import {
-  Shortcut,
-  ContextMenu,
-  CommandHistory,
-  KeyPressCallback,
-  KenanTextEditorUI,
-  MouseClickCallback,
-  MouseKeyDownUpCallback,
-} from "./senders";
+import { CommandHistory } from "./senders";
 import { TextEditor, TextEditorApplication } from "./receiver";
 
 // Client
@@ -34,85 +28,12 @@ class ClientCommand {
         commandHistory
       );
 
-    const contextMenu = new ContextMenu();
-
-    contextMenu.addMenu(
-      "copy",
-      textEditorCommandFactory.getCopyCommand.bind(textEditorCommandFactory)
-    );
-
-    contextMenu.addMenu(
-      "cut",
-      textEditorCommandFactory.getCutCommand.bind(textEditorCommandFactory)
-    );
-
-    contextMenu.addMenu(
-      "paste",
-      textEditorCommandFactory.getPasteCommand.bind(textEditorCommandFactory)
-    );
-
-    contextMenu.addMenu(
-      "undo",
-      textEditorCommandFactory.getUndoCommand.bind(textEditorCommandFactory)
-    );
-
-    contextMenu.addMenu(
-      "redo",
-      textEditorCommandFactory.getRedoCommand.bind(textEditorCommandFactory)
-    );
-
-    const shortcut = new Shortcut();
-
-    shortcut.addShortcutKey(
-      "CTRL+C",
-      textEditorCommandFactory.getCopyCommand.bind(textEditorCommandFactory)
-    );
-
-    shortcut.addShortcutKey(
-      "CTRL+X",
-      textEditorCommandFactory.getCutCommand.bind(textEditorCommandFactory)
-    );
-
-    shortcut.addShortcutKey(
-      "CTRL+V",
-      textEditorCommandFactory.getPasteCommand.bind(textEditorCommandFactory)
-    );
-
-    shortcut.addShortcutKey(
-      "CTRL+Z",
-      textEditorCommandFactory.getUndoCommand.bind(textEditorCommandFactory)
-    );
-
-    shortcut.addShortcutKey(
-      "CTRL+SHIFT+Z",
-      textEditorCommandFactory.getRedoCommand.bind(textEditorCommandFactory)
-    );
-
-    const onKeyPressCallback: KeyPressCallback = (keyEventArg) => {
-      return textEditorCommandFactory.getKeyPressCommand(keyEventArg);
-    };
-
-    const onMouseClickCallback: MouseClickCallback = (cursorPosition) => {
-      return textEditorCommandFactory.getMouseClickCommand(cursorPosition);
-    };
-
-    const onMouseKeyDownCallback: MouseKeyDownUpCallback = (cursorPosition) => {
-      return textEditorCommandFactory.getMouseKeyDownCommand(cursorPosition);
-    };
-
-    const onMouseKeyUpCallback: MouseKeyDownUpCallback = (cursorPosition) => {
-      return textEditorCommandFactory.getMouseKeyUpCommand(cursorPosition);
-    };
-
-    const ui = new KenanTextEditorUI(
+    const uiFactory: TextEditorUIFactory = new UIFactory(
       textEditor,
-      contextMenu,
-      shortcut,
-      onKeyPressCallback,
-      onMouseClickCallback,
-      onMouseKeyDownCallback,
-      onMouseKeyUpCallback
+      textEditorCommandFactory
     );
+
+    const ui = uiFactory.getTextEditorUI();
 
     ui.keyPress("H");
     ui.keyPress("e");

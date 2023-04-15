@@ -5,14 +5,17 @@ import {
   MouseClickCallback,
   MouseKeyDownUpCallback,
   ShortCutKeys,
+  TopMenu,
 } from ".";
 import { TextEditor } from "../receiver";
 import { ContextMenu } from "./context-menu";
 import { Shortcut } from "./shortcut";
+import { TextEditorUI } from "./text-editor-ui";
 
 // Sender/Invoker
-export class KenanTextEditorUI {
+export class KenanTextEditorUI implements TextEditorUI {
   private readonly textEditor: TextEditor;
+  private readonly topMenu: TopMenu;
   private readonly contextMenu: ContextMenu;
   private readonly shortcut: Shortcut;
   private readonly onKeyPressCallback: KeyPressCallback;
@@ -22,6 +25,7 @@ export class KenanTextEditorUI {
 
   constructor(
     textEditor: TextEditor,
+    topMenu: TopMenu,
     contextMenu: ContextMenu,
     shortcut: Shortcut,
     onKeyPressCallback: KeyPressCallback,
@@ -30,6 +34,7 @@ export class KenanTextEditorUI {
     onMouseKeyUpCallback: MouseKeyDownUpCallback
   ) {
     this.textEditor = textEditor;
+    this.topMenu = topMenu;
     this.contextMenu = contextMenu;
     this.shortcut = shortcut;
     this.onKeyPressCallback = onKeyPressCallback;
@@ -66,6 +71,10 @@ export class KenanTextEditorUI {
     this.mouseKeyDown(fromPosition);
 
     this.mouseKeyUp(toPosition);
+  }
+
+  clickTopMenu(menu: string) {
+    this.topMenu.click(menu);
   }
 
   clickContextMenu(menu: string) {
