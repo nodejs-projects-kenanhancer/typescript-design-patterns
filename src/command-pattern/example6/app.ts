@@ -70,11 +70,49 @@ class RemoteControl {
     this.switchOffCommand = switchOffCommand;
   }
 
-  pressOn() {
+  pressOnButton() {
     this.switchOnCommand.execute();
   }
 
-  pressOff() {
+  pressOffButton() {
+    this.switchOffCommand.execute();
+  }
+}
+
+// Sender/Invoker
+class MobileApp {
+  private readonly switchOnCommand: Command;
+  private readonly switchOffCommand: Command;
+
+  constructor(switchOnCommand: Command, switchOffCommand: Command) {
+    this.switchOnCommand = switchOnCommand;
+    this.switchOffCommand = switchOffCommand;
+  }
+
+  tapOnButton() {
+    this.switchOnCommand.execute();
+  }
+
+  tapOffButton() {
+    this.switchOffCommand.execute();
+  }
+}
+
+// Sender/Invoker
+class VoiceAssistant {
+  private readonly switchOnCommand: Command;
+  private readonly switchOffCommand: Command;
+
+  constructor(switchOnCommand: Command, switchOffCommand: Command) {
+    this.switchOnCommand = switchOnCommand;
+    this.switchOffCommand = switchOffCommand;
+  }
+
+  sayTurnOn() {
+    this.switchOnCommand.execute();
+  }
+
+  sayTurnOff() {
     this.switchOffCommand.execute();
   }
 }
@@ -122,21 +160,38 @@ class CommandClient {
   }
 
   static test(switchable: Switchable) {
-    const turnOnCommand: Command = new LightOnCommand(switchable);
+    // Commands
+    const switchOnCommand: Command = new LightOnCommand(switchable);
 
-    const turnOffCommand: Command = new LightOffCommand(switchable);
+    const switchOffCommand: Command = new LightOffCommand(switchable);
 
-    const switchBox = new SwitchBox(turnOnCommand, turnOffCommand);
+    // Senders
+    const switchBox = new SwitchBox(switchOnCommand, switchOffCommand);
 
-    const remoteControl = new RemoteControl(turnOnCommand, turnOffCommand);
+    const remoteControl = new RemoteControl(switchOnCommand, switchOffCommand);
+
+    const mobileApp = new MobileApp(switchOnCommand, switchOffCommand);
+
+    const voiceAssistance = new VoiceAssistant(
+      switchOnCommand,
+      switchOffCommand
+    );
 
     switchBox.flipUp();
 
     switchBox.flipDown();
 
-    remoteControl.pressOn();
+    remoteControl.pressOnButton();
 
-    remoteControl.pressOff();
+    remoteControl.pressOffButton();
+
+    mobileApp.tapOnButton();
+
+    mobileApp.tapOffButton();
+
+    voiceAssistance.sayTurnOn();
+
+    voiceAssistance.sayTurnOff();
   }
 }
 
