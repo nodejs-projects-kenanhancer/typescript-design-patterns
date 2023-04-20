@@ -118,7 +118,7 @@ class VoiceAssistant {
 }
 
 // Command
-class LightOnCommand implements Command {
+class SwitchOnCommand implements Command {
   private readonly switchable: Switchable;
 
   constructor(switchable: Switchable) {
@@ -131,7 +131,7 @@ class LightOnCommand implements Command {
 }
 
 // Command
-class LightOffCommand implements Command {
+class SwitchOffCommand implements Command {
   private readonly switchable: Switchable;
 
   constructor(switchable: Switchable) {
@@ -161,9 +161,9 @@ class CommandClient {
 
   static test(switchable: Switchable) {
     // Commands
-    const switchOnCommand: Command = new LightOnCommand(switchable);
+    const switchOnCommand: Command = new SwitchOnCommand(switchable);
 
-    const switchOffCommand: Command = new LightOffCommand(switchable);
+    const switchOffCommand: Command = new SwitchOffCommand(switchable);
 
     // Senders
     const switchBox = new SwitchBox(switchOnCommand, switchOffCommand);
