@@ -24,11 +24,9 @@ class CommandClient {
       commandManager
     );
 
-    const voiceAssistantForLight = new VoiceAssistant(light, commandManager);
-
-    const voiceAssistantForRadio = new VoiceAssistant(radio, commandManager);
-
-    const voiceAssistantForTelevision = new VoiceAssistant(
+    const voiceAssistant = new VoiceAssistant(
+      light,
+      radio,
       television,
       commandManager
     );
@@ -47,13 +45,21 @@ class CommandClient {
 
     remoteControlForLight.pressOnButton();
 
-    voiceAssistantForRadio.sayTurnOn();
+    remoteControlForLight.pressOnButton();
+
+    remoteControlForLight.pressOffButton();
+
+    commandManager.undo();
+
+    commandManager.redo();
+
+    voiceAssistant.sayTurnOnRadio();
 
     wallSwitchForTelevision.flipUp();
 
     commandManager.undo();
 
-    voiceAssistantForTelevision.sayTurnOn();
+    voiceAssistant.sayTurnOnTv();
 
     remoteControlForRadio.pressOffButton();
   }
@@ -61,5 +67,4 @@ class CommandClient {
 
 CommandClient.main();
 
-export { };
-
+export {};

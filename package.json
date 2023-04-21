@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build --watch",
     "preStart": "npm run build",
-    "start": "node --watch ./dist/command-pattern/example10/app.js",
+    "start": "node --watch ./dist/command-pattern/example12/app.js",
     "install:rc": "npm i -D typescript@rc",
     "install:next": "npm i -D typescript@next",
     "install:beta": "npm i -D typescript@beta"
