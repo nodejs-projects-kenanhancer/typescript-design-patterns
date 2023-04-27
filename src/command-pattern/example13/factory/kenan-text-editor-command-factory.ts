@@ -60,11 +60,7 @@ export class KenanTextEditorCommandFactory implements TextEditorCommandFactory {
   }
 
   getKeyPressCommand(keyEventArg: KeyEventArg): Command {
-    const command = new KeyPressCommand(
-      this.textEditor,
-      this.textEditor.text,
-      keyEventArg
-    );
+    const command = new KeyPressCommand(this.textEditor, keyEventArg);
 
     return command;
   }

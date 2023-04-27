@@ -5,24 +5,23 @@ import { ReversibleCommand } from "./reversible-command";
 // Command
 export class KeyPressCommand implements ReversibleCommand {
   private readonly textEditor: TextEditor;
-  private readonly text: string;
   private readonly keyEventArg: KeyEventArg;
   private readonly position: number = -1;
   private readonly textEditorSnapshot: TextEditorState;
 
-  constructor(textEditor: TextEditor, text: string, keyEventArg: KeyEventArg) {
+  constructor(textEditor: TextEditor, keyEventArg: KeyEventArg) {
     this.textEditor = textEditor;
 
-    this.text = text;
-
     this.keyEventArg = keyEventArg;
+
+    const text = textEditor.text;
 
     const cursorPosition = textEditor.cursorPosition;
 
     if (cursorPosition >= 0) {
-      this.position = cursorPosition + this.text.length + 1;
+      this.position = cursorPosition + text.length + 1;
     } else {
-      this.position = this.text.length + 1;
+      this.position = text.length + 1;
     }
 
     this.textEditorSnapshot = textEditor.createSnapshot();

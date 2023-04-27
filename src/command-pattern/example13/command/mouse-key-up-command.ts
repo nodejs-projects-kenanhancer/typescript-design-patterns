@@ -20,12 +20,6 @@ export class MouseKeyUpCommand implements Command {
       );
 
       this.textEditor.setSelectedText(selectedText);
-
-      // new SelectTextCommand(
-      //   this.textEditor,
-      //   this.textEditor.cursorPosition,
-      //   this.position
-      // ).execute();
     }
 
     this.textEditor.setMouseKeyPosition("up");

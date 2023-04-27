@@ -6,7 +6,7 @@ import {
 } from "./factory";
 
 import { TextEditor, TextEditorImplementation } from "./receiver";
-import { CommandHistory, CommandManager } from "./sender";
+import { CommandHistory, CommandManager, TextEditorUI } from "./sender";
 
 // Client
 class ClientCommand {
@@ -24,7 +24,7 @@ class ClientCommand {
       commandManager
     );
 
-    const ui = uiFactory.getTextEditorUI();
+    const ui: TextEditorUI = uiFactory.getTextEditorUI();
 
     ui.keyPress("H");
     ui.keyPress("e");
@@ -70,9 +70,6 @@ class ClientCommand {
     ui.clickTopMenu("undo");
 
     ui.keyPressShortcut("CTRL+Z"); // Undo
-
-    ui.keyPressShortcut("CTRL+SHIFT+Z"); // Redo
-
 
     ui.keyPressShortcut("CTRL+Z"); // Undo
 

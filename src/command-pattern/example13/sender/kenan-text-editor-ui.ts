@@ -52,7 +52,6 @@ export class KenanTextEditorUI implements TextEditorUI {
   keyPress(key: ASCII_PRINTABLE_KEYS) {
     const command = new KeyPressCommand(
       this.textEditor,
-      this.textEditor.text,
       KeyEventArg.createInstance(key)
     );
 
