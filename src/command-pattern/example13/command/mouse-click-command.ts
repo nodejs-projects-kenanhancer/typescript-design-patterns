@@ -1,7 +1,7 @@
 import { TextEditor, TextEditorState } from "../receiver";
-import { NavigableCommand } from "./navigable-command";
+import { ReversibleCommand } from "./reversible-command";
 
-export class MouseClickCommand implements NavigableCommand {
+export class MouseClickCommand implements ReversibleCommand {
   private readonly textEditor: TextEditor;
   private readonly position: number;
   private readonly textEditorSnapshot: TextEditorState;
@@ -17,7 +17,7 @@ export class MouseClickCommand implements NavigableCommand {
     this.textEditor.setMouseKeyPosition("click");
   }
 
-  navigate(): void {
+  undo(): void {
     this.textEditor.restore(this.textEditorSnapshot);
   }
 }

@@ -10,7 +10,7 @@ import {
 import { TextEditorCommandFactory } from "./text-editor-command-factory";
 import { TextEditorUIFactory } from "./text-editor-ui-factory";
 
-export class UIFactory implements TextEditorUIFactory {
+export class KenanTextEditorUIFactory implements TextEditorUIFactory {
   private readonly textEditor: TextEditor;
   private readonly textEditorCommandFactory: TextEditorCommandFactory;
   private readonly commandManager: CommandManager;
@@ -30,7 +30,11 @@ export class UIFactory implements TextEditorUIFactory {
     textEditorCommandFactory: TextEditorCommandFactory,
     commandManager: CommandManager
   ) {
-    return new UIFactory(textEditor, textEditorCommandFactory, commandManager);
+    return new KenanTextEditorUIFactory(
+      textEditor,
+      textEditorCommandFactory,
+      commandManager
+    );
   }
 
   getTextEditorUI(): TextEditorUI {
@@ -102,18 +106,12 @@ export class UIFactory implements TextEditorUIFactory {
       )
     );
 
-    topMenu.addMenu(
-      "undo",
-      this.textEditorCommandFactory.getUndoCommand.bind(
-        this.textEditorCommandFactory
-      )
+    topMenu.addMenu("undo", (cursorPosition) =>
+      this.textEditorCommandFactory.getUndoCommand().execute()
     );
 
-    topMenu.addMenu(
-      "redo",
-      this.textEditorCommandFactory.getRedoCommand.bind(
-        this.textEditorCommandFactory
-      )
+    topMenu.addMenu("redo", (cursorPosition) =>
+      this.textEditorCommandFactory.getRedoCommand().execute()
     );
 
     return topMenu;
@@ -143,18 +141,12 @@ export class UIFactory implements TextEditorUIFactory {
       )
     );
 
-    shortcut.addShortcutKey(
-      "CTRL+Z",
-      this.textEditorCommandFactory.getUndoCommand.bind(
-        this.textEditorCommandFactory
-      )
+    shortcut.addShortcutKey("CTRL+Z", (keyEventArg) =>
+      this.textEditorCommandFactory.getUndoCommand().execute()
     );
 
-    shortcut.addShortcutKey(
-      "CTRL+SHIFT+Z",
-      this.textEditorCommandFactory.getRedoCommand.bind(
-        this.textEditorCommandFactory
-      )
+    shortcut.addShortcutKey("CTRL+SHIFT+Z", (keyEventArg) =>
+      this.textEditorCommandFactory.getRedoCommand().execute()
     );
 
     return shortcut;

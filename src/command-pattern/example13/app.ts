@@ -1,8 +1,8 @@
 import {
   KenanTextEditorCommandFactory,
+  KenanTextEditorUIFactory,
   TextEditorCommandFactory,
   TextEditorUIFactory,
-  UIFactory,
 } from "./factory";
 
 import { TextEditor, TextEditorImplementation } from "./receiver";
@@ -18,7 +18,7 @@ class ClientCommand {
     const textEditorCommandFactory: TextEditorCommandFactory =
       KenanTextEditorCommandFactory.createInstance(textEditor, commandManager);
 
-    const uiFactory: TextEditorUIFactory = UIFactory.createInstance(
+    const uiFactory: TextEditorUIFactory = KenanTextEditorUIFactory.createInstance(
       textEditor,
       textEditorCommandFactory,
       commandManager

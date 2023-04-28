@@ -1,6 +1,5 @@
 export * from "./command";
 export * from "./reversible-command";
-export * from "./navigable-command";
 export * from "./copy-command";
 export * from "./cut-command";
 export * from "./paste-command";

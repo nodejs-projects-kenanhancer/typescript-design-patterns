@@ -22,7 +22,9 @@ export class TopMenu {
     if (commandCallback) {
       const command = commandCallback(-1);
 
-      this.commandManager.execute(command);
+      if (command) {
+        this.commandManager.execute(command);
+      }
     }
   }
 }

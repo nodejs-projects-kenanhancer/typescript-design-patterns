@@ -28,7 +28,9 @@ export class Shortcut {
     if (commandCallback) {
       const command = commandCallback(keyEventArg);
 
-      this.commandManager.execute(command);
+      if (command) {
+        this.commandManager.execute(command);
+      }
     }
   }
 }

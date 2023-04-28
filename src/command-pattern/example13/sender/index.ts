@@ -6,9 +6,9 @@ export type ShortCutKeys =
   | `${ASCII_CONTROL_KEYS}+${ASCII_UPPERCASE_ALPHABET_KEYS}`
   | `${ASCII_CONTROL_KEYS}+${ASCII_CONTROL_KEYS}+${ASCII_UPPERCASE_ALPHABET_KEYS}`;
 
-export type MouseClickCallback = (cursorPosition: number) => Command;
+export type MouseClickCallback = (cursorPosition: number) => Command | void;
 export type MouseKeyDownUpCallback = (cursorPosition: number) => Command;
-export type KeyPressCallback = (keyEventArg: KeyEventArg) => Command;
+export type KeyPressCallback = (keyEventArg: KeyEventArg) => Command | void;
 
 export * from "./ascii";
 export * from "./command-history";

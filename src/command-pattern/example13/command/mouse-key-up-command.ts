@@ -1,13 +1,15 @@
-import { TextEditor } from "../receiver";
-import { Command } from "./command";
+import { TextEditor, TextEditorState } from "../receiver";
+import { ReversibleCommand } from "./reversible-command";
 
-export class MouseKeyUpCommand implements Command {
+export class MouseKeyUpCommand implements ReversibleCommand {
   private readonly textEditor: TextEditor;
   private readonly position: number;
+  private readonly textEditorSnapshot: TextEditorState;
 
   constructor(textEditor: TextEditor, position: number) {
     this.textEditor = textEditor;
     this.position = position;
+    this.textEditorSnapshot = textEditor.createSnapshot();
   }
 
   execute(): void {
@@ -23,5 +25,9 @@ export class MouseKeyUpCommand implements Command {
     }
 
     this.textEditor.setMouseKeyPosition("up");
+  }
+
+  undo(): void {
+    this.textEditor.restore(this.textEditorSnapshot);
   }
 }
