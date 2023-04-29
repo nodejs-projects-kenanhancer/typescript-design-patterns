@@ -47,6 +47,7 @@ export class KenanTextEditorUIFactory implements TextEditorUIFactory {
     const ui: TextEditorUI = KenanTextEditorUI.createInstance(
       this.textEditor,
       this.commandManager,
+      this.textEditorCommandFactory,
       topMenu,
       contextMenu,
       shortcut
