@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build --watch",
-    "preStart": "npm run build",
-    "start": "node --watch ./dist/command-pattern/example13/app.js",
+    "start": "node ./dist/factory-method-pattern/example4/app.js",
     "install:rc": "npm i -D typescript@rc",
     "install:next": "npm i -D typescript@next",
     "install:beta": "npm i -D typescript@beta"
@@ -16,6 +15,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.0.0-beta"
+    "typescript": "^5.1.0-beta"
   }
 }
