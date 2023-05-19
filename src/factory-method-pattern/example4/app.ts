@@ -131,20 +131,24 @@ class AllowedValues<
 
 class DeniedValues<
   TRecord,
-  const TValues extends readonly TRecord[]
-> extends BaseFieldDecorator<TRecord> {
-  private readonly deniedValues: TValues[];
+  TValue,
+  const TValues extends readonly TValue[]
+> extends BaseFieldDecorator<TRecord, TValue> {
+  private readonly deniedValues: TValues;
 
   constructor(
-    deniedValues: TValues[],
-    fieldDecorator?: FieldDecorator<TRecord, any>
+    deniedValues: TValues,
+    fieldDecorator?: FieldDecorator<TRecord, TValue>
   ) {
     super(fieldDecorator);
 
     this.deniedValues = deniedValues;
   }
 
-  execute(fieldName: TFieldName<TRecord, any, keyof TRecord>, fieldValue: any) {
+  execute(
+    fieldName: TFieldName<TRecord, TValue, keyof TRecord>,
+    fieldValue: TValue
+  ): TValue {
     if (this.deniedValues.includes(fieldValue)) {
       throw new Error(`${fieldName} can't be one of [${this.deniedValues}]`);
     }
