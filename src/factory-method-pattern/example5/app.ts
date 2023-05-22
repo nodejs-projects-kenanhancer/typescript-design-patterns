@@ -1,185 +1,79 @@
-// interface Command {
-//   execute(): void;
-// }
+import {
+  AllowedValues,
+  MaxValue,
+  MinValue,
+  NotEmpty,
+  NotNull,
+  Pipe,
+  PrintValue,
+} from "./decorators";
+import { User, Vehicle } from "./model";
+import {
+  COLOR,
+  COUNTRY_NAMES,
+  FUEL_TYPES,
+  ROLES,
+  VEHICLE_TYPES,
+} from "./model/constant";
+import { Validator } from "./model/validator";
 
-// interface VehicleValidationStrategy {
-//   validate(vehicle: Vehicle): void;
-// }
+class FactoryMethodClient {
+  static main() {
+    this.testVehicle();
 
-// abstract class ValidationStrategyDecorator
-//   implements VehicleValidationStrategy
-// {
-//   private readonly validationStrategy: VehicleValidationStrategy;
+    this.testUser();
+  }
 
-//   constructor(validationStrategy: VehicleValidationStrategy) {
-//     this.validationStrategy = validationStrategy;
-//   }
+  static testVehicle() {
+    const vehicleValidator = Validator.createInstance<Vehicle>({
+      type: new AllowedValues([...VEHICLE_TYPES], new PrintValue()),
+      color: new Pipe(new AllowedValues([...COLOR], new PrintValue())),
+      numberOfWheels: new MinValue(0, new MaxValue(8)),
+      fuelType: new Pipe(new AllowedValues([...FUEL_TYPES]), new PrintValue()),
+    });
 
-//   validate(vehicle: Vehicle): void {
-//     if (this.validationStrategy) {
-//       this.validationStrategy.validate(vehicle);
-//     }
-//   }
-// }
+    Vehicle.setValidator(vehicleValidator);
 
-// class TypeValidationCommand implements Command {
-//   execute(): void {
-//     throw new Error("Method not implemented.");
-//   }
-// }
+    const jeep = Vehicle.createInstance("Car", "Blue", 8, "Petrol");
 
-// class ColorValidationCommand implements Command {
-//   execute(): void {
-//     throw new Error("Method not implemented.");
-//   }
-// }
+    const car = Vehicle.createCar("Black", "Petrol");
 
-// class NumberOfWheelsValidationCommand implements Command {
-//   execute(): void {
-//     throw new Error("Method not implemented.");
-//   }
-// }
+    const bike = Vehicle.createBike("Green");
 
-// class ColorValidationDecorator extends ValidationStrategyDecorator {
-//   private constructor(validationStrategy: VehicleValidationStrategy) {
-//     super(validationStrategy);
-//   }
+    const electricCar = Vehicle.createElectricCar("White");
 
-//   validate(vehicle: Vehicle): void {
-//     super.validate(vehicle);
+    console.log(jeep);
 
-//     if (!vehicle.color) {
-//       throw new Error("Color cannot be null or empty");
-//     }
-//   }
+    console.log(car);
 
-//   static createInstance(validationStrategy: VehicleValidationStrategy) {
-//     return new ColorValidationDecorator(validationStrategy);
-//   }
+    console.log(bike);
 
-//   static use(validationStrategy: VehicleValidationStrategy) {
-//     return new ColorValidationDecorator(validationStrategy);
-//   }
-// }
+    console.log(electricCar);
+  }
 
-// class TypeValidationDecorator extends ValidationStrategyDecorator {
-//   private constructor(validationStrategy: VehicleValidationStrategy) {
-//     super(validationStrategy);
-//   }
+  static testUser() {
+    const userValidator = Validator.createInstance<User>({
+      age: new MinValue(1, new MaxValue(120)),
+      country: new AllowedValues([...COUNTRY_NAMES]),
+      email: new NotEmpty(),
+      name: new Pipe(new NotEmpty(), new NotNull()),
+      password: new Pipe(new NotEmpty(), new NotNull(), new PrintValue()),
+      role: new AllowedValues([...ROLES]),
+    });
 
-//   validate(vehicle: Vehicle): void {
-//     super.validate(vehicle);
+    const member = User.createMember(
+      {
+        name: "kenan",
+        age: 39,
+        country: "Afghanistan",
+        email: "kh@kh.com",
+        password: "11111",
+      },
+      userValidator
+    );
+  }
+}
 
-//     if (vehicle.type !== "car" && vehicle.type !== "bike") {
-//       throw new Error("Type should be either 'car' or 'bike'");
-//     }
-//   }
+FactoryMethodClient.main();
 
-//   static createInstance(validationStrategy: VehicleValidationStrategy) {
-//     return new TypeValidationDecorator(validationStrategy);
-//   }
-
-//   static use(validationStrategy: VehicleValidationStrategy) {
-//     return new TypeValidationDecorator(validationStrategy);
-//   }
-// }
-
-// class NumberOfWheelsValidationDecorator extends ValidationStrategyDecorator {
-//   private constructor(validationStrategy: VehicleValidationStrategy) {
-//     super(validationStrategy);
-//   }
-
-//   validate(vehicle: Vehicle): void {
-//     super.validate(vehicle);
-
-//     if (vehicle.numberOfWheels <= 0) {
-//       throw new Error("Number of wheels should be higher than zero");
-//     }
-//   }
-
-//   static createInstance(validationStrategy: VehicleValidationStrategy) {
-//     return new NumberOfWheelsValidationDecorator(validationStrategy);
-//   }
-
-//   static use(validationStrategy: VehicleValidationStrategy) {
-//     return new NumberOfWheelsValidationDecorator(validationStrategy);
-//   }
-// }
-
-// class NoValidationStrategy implements VehicleValidationStrategy {
-//   private constructor() {}
-
-//   validate(): void {}
-
-//   static createInstance() {
-//     return new NoValidationStrategy();
-//   }
-// }
-
-// class Vehicle {
-//   public readonly type: string;
-//   public readonly color: string;
-//   public readonly numberOfWheels: number;
-//   public readonly isElectric: boolean;
-//   private static validationStrategy: VehicleValidationStrategy =
-//     NoValidationStrategy.createInstance();
-
-//   private constructor(
-//     type: string,
-//     color: string,
-//     numberOfWheels: number,
-//     isElectric: boolean
-//   ) {
-//     this.type = type;
-//     this.color = color;
-//     this.numberOfWheels = numberOfWheels;
-//     this.isElectric = isElectric;
-//   }
-
-//   static createCar(color: string) {
-//     Vehicle.validationStrategy.validate();
-//     return new Vehicle("car", color, 4, false);
-//   }
-
-//   static createBike(color: string) {
-//     return new Vehicle("bike", color, 2, false);
-//   }
-
-//   static createElectricCar(color: string) {
-//     return new Vehicle("car", color, 4, true);
-//   }
-
-//   static setValidationStrategy(validationStrategy: VehicleValidationStrategy) {
-//     Vehicle.validationStrategy = validationStrategy;
-//   }
-// }
-
-// class FactoryMethodClient {
-//   static main() {
-//     const vehicleValidationStrategy = ColorValidationDecorator.use(
-//       TypeValidationDecorator.use(
-//         NumberOfWheelsValidationDecorator.use(
-//           NoValidationStrategy.createInstance()
-//         )
-//       )
-//     );
-
-//     Vehicle.setValidationStrategy(vehicleValidationStrategy);
-
-//     const car = Vehicle.createCar("black");
-
-//     const bike = Vehicle.createBike("green");
-
-//     const electricCar = Vehicle.createElectricCar("white");
-
-//     console.log(car);
-
-//     console.log(bike);
-
-//     console.log(electricCar);
-//   }
-// }
-
-// FactoryMethodClient.main();
-
-// export {};
+export {};

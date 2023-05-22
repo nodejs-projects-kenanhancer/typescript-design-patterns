@@ -1,4 +1,3 @@
-//TFieldValue extends TField extends never ? TRecord[TFieldName] : TField
 type TFieldName<
   TRecord,
   TFieldValue,
@@ -38,7 +37,7 @@ abstract class BaseFieldDecorator<TRecord, TFieldValue = any>
 }
 
 class MinValue<TRecord> extends BaseFieldDecorator<TRecord, number> {
-  private readonly minValue;
+  private readonly minValue: number;
 
   constructor(
     minValue: number,
@@ -62,7 +61,7 @@ class MinValue<TRecord> extends BaseFieldDecorator<TRecord, number> {
 }
 
 class MaxValue<TRecord> extends BaseFieldDecorator<TRecord, number> {
-  private readonly maxValue;
+  private readonly maxValue: number;
 
   constructor(
     maxValue: number,

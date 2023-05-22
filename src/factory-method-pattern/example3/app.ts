@@ -5,15 +5,15 @@ interface FieldDecorator<TField = any> {
 abstract class BaseFieldDecorator<TField = any>
   implements FieldDecorator<TField>
 {
-  private readonly fieldDecorator?: FieldDecorator<TField>;
+  private readonly nextFieldDecorator?: FieldDecorator<TField>;
 
-  constructor(fieldDecorator?: FieldDecorator<TField>) {
-    this.fieldDecorator = fieldDecorator;
+  constructor(nextFieldDecorator?: FieldDecorator<TField>) {
+    this.nextFieldDecorator = nextFieldDecorator;
   }
 
   execute(fieldName: string, fieldValue: TField): TField {
-    if (this.fieldDecorator) {
-      return this.fieldDecorator.execute(fieldName, fieldValue);
+    if (this.nextFieldDecorator) {
+      return this.nextFieldDecorator.execute(fieldName, fieldValue);
     }
 
     return fieldValue;
@@ -23,8 +23,8 @@ abstract class BaseFieldDecorator<TField = any>
 class MinValue extends BaseFieldDecorator<number> {
   private readonly minValue;
 
-  constructor(minValue: number, fieldDecorator?: FieldDecorator<number>) {
-    super(fieldDecorator);
+  constructor(minValue: number, nextFieldDecorator?: FieldDecorator<number>) {
+    super(nextFieldDecorator);
 
     this.minValue = minValue;
   }
@@ -41,8 +41,8 @@ class MinValue extends BaseFieldDecorator<number> {
 class MaxValue extends BaseFieldDecorator<number> {
   private readonly maxValue;
 
-  constructor(maxValue: number, fieldDecorator?: FieldDecorator<number>) {
-    super(fieldDecorator);
+  constructor(maxValue: number, nextFieldDecorator?: FieldDecorator<number>) {
+    super(nextFieldDecorator);
 
     this.maxValue = maxValue;
   }
@@ -59,8 +59,8 @@ class MaxValue extends BaseFieldDecorator<number> {
 class Length<TValue> extends BaseFieldDecorator<TValue> {
   private readonly length: number;
 
-  constructor(length: number, fieldDecorator?: FieldDecorator<TValue>) {
-    super(fieldDecorator);
+  constructor(length: number, nextFieldDecorator?: FieldDecorator<TValue>) {
+    super(nextFieldDecorator);
 
     this.length = length;
   }
@@ -82,8 +82,8 @@ class AllowedValues<
 > extends BaseFieldDecorator<TValue> {
   private readonly allowedValues: T;
 
-  constructor(allowedValues: T, fieldDecorator?: FieldDecorator<TValue>) {
-    super(fieldDecorator);
+  constructor(allowedValues: T, nextFieldDecorator?: FieldDecorator<TValue>) {
+    super(nextFieldDecorator);
     this.allowedValues = allowedValues;
   }
 
@@ -99,8 +99,11 @@ class AllowedValues<
 class DeniedValues<TValue> extends BaseFieldDecorator<TValue> {
   private readonly deniedValues: TValue[];
 
-  constructor(deniedValues: TValue[], fieldDecorator?: FieldDecorator<TValue>) {
-    super(fieldDecorator);
+  constructor(
+    deniedValues: TValue[],
+    nextFieldDecorator?: FieldDecorator<TValue>
+  ) {
+    super(nextFieldDecorator);
 
     this.deniedValues = deniedValues;
   }
@@ -115,8 +118,8 @@ class DeniedValues<TValue> extends BaseFieldDecorator<TValue> {
 }
 
 class NotEmpty extends BaseFieldDecorator<string> {
-  constructor(fieldDecorator?: FieldDecorator<string>) {
-    super(fieldDecorator);
+  constructor(nextFieldDecorator?: FieldDecorator<string>) {
+    super(nextFieldDecorator);
   }
 
   execute(fieldName: string, fieldValue: string): string {
@@ -147,16 +150,16 @@ class PrintValue<TValue> extends BaseFieldDecorator<TValue> {
 }
 
 class Pipe<TValue> extends BaseFieldDecorator<TValue> {
-  private readonly fieldDecorators: FieldDecorator<TValue>[];
+  private readonly nextFieldDecorators: FieldDecorator<TValue>[];
 
-  constructor(...fieldDecorators: FieldDecorator<TValue>[]) {
+  constructor(...nextFieldDecorators: FieldDecorator<TValue>[]) {
     super();
-    this.fieldDecorators = fieldDecorators;
+    this.nextFieldDecorators = nextFieldDecorators;
   }
 
   execute(fieldName: string, fieldValue: TValue): TValue {
     let result: TValue;
-    for (const fieldDecorator of this.fieldDecorators) {
+    for (const fieldDecorator of this.nextFieldDecorators) {
       result = fieldDecorator.execute(fieldName, fieldValue);
     }
 
@@ -276,7 +279,7 @@ class Vehicle {
     const _vehicleValidator = vehicleValidator || Vehicle.vehicleValidator;
 
     if (_vehicleValidator) {
-      _vehicleValidator.typeValidator.execute("fuelType", type);
+      _vehicleValidator.typeValidator.execute("type", type);
       _vehicleValidator.colorValidator.execute("color", color);
       _vehicleValidator.fuelTypeValidator.execute("fuelType", fuelType);
       _vehicleValidator.numberOfWheelsValidator.execute(
@@ -361,7 +364,7 @@ class FactoryMethodClient {
 
     Vehicle.setVehicleValidator(vehicleValidator);
 
-    const jeep = Vehicle.createInstance("Card" as any, "Blue", 8, "Petrol");
+    const jeep = Vehicle.createInstance("Car", "Blue", 8, "Petrol");
 
     const car = Vehicle.createCar("Black", "Petrol");
 

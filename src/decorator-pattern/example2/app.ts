@@ -88,3 +88,5 @@ class BackgroudDecorator extends ShapeDecorator {
 
   redBackgroundYellowBorderCircle.draw();
 })();
+
+export {};
