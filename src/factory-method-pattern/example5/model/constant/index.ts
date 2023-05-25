@@ -12,6 +12,14 @@ export const VEHICLE_TYPES = [
   "Bike",
 ] as const;
 
+export const MAINTENANCE_STATUS = [
+  "Good",
+  "Excellent",
+  "Fair",
+  "Needs Maintenance",
+  "Critical",
+] as const;
+
 export const COLOR = [
   "Red",
   "Green",

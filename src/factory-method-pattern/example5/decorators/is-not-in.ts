@@ -1,7 +1,7 @@
+import type { FieldNameType } from "../model/type";
 import { BaseFieldDecorator } from "./base-field-decorator";
-import { FieldDecorator, FieldNameType } from "./field-decorator";
 
-export class DeniedValues<
+export class IsNotIn<
   TRecord,
   TFieldName extends keyof TRecord,
   TFieldValue,
@@ -11,7 +11,7 @@ export class DeniedValues<
 
   constructor(
     deniedValues: TValues,
-    nextFieldDecorator?: FieldDecorator<TRecord, TFieldName, TFieldValue>
+    nextFieldDecorator?: BaseFieldDecorator<TRecord, TFieldName, TFieldValue>
   ) {
     super(nextFieldDecorator);
 
@@ -22,8 +22,10 @@ export class DeniedValues<
     fieldName: FieldNameType<TRecord, TFieldName, TFieldValue>,
     fieldValue: TFieldValue
   ): TFieldValue {
-    if (this.deniedValues.includes(fieldValue)) {
-      throw new Error(`${fieldName} can't be one of [${this.deniedValues}]`);
+    if (this.deniedValues.some((value) => value === fieldValue)) {
+      throw new Error(
+        `${fieldName} should not be one of the following values: ${this.deniedValues}`
+      );
     }
 
     return super.execute(fieldName, fieldValue);

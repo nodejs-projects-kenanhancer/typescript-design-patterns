@@ -1,28 +1,35 @@
+import type { FieldNameType } from "../model/type";
 import { BaseFieldDecorator } from "./base-field-decorator";
-import { FieldDecorator, FieldNameType } from "./field-decorator";
 
 export class Length<
   TRecord,
   TFieldName extends keyof TRecord
 > extends BaseFieldDecorator<TRecord, TFieldName, ArrayLike<any>> {
-  private readonly length: number;
+  private readonly min: number;
+  private readonly max: number;
 
   constructor(
-    length: number,
-    nextFieldDecorator: FieldDecorator<TRecord, TFieldName, ArrayLike<any>>
+    min: number,
+    max: number,
+    nextFieldDecorator: BaseFieldDecorator<TRecord, TFieldName, ArrayLike<any>>
   ) {
     super(nextFieldDecorator);
 
-    this.length = length;
+    this.min = min;
+    this.max = max;
   }
 
   execute(
     fieldName: FieldNameType<TRecord, TFieldName, ArrayLike<any>>,
     fieldValue: ArrayLike<any>
   ): ArrayLike<any> {
-    if (fieldValue.length > this.length) {
+    if (fieldValue.length < this.min) {
       throw new Error(
-        `${fieldName} length can't be greater than ${this.length}`
+        `${fieldName} length must be longer than or equal to ${this.min}`
+      );
+    } else if (fieldValue.length > this.max) {
+      throw new Error(
+        `${fieldName} length must be shorter than or equal to ${this.min}`
       );
     }
 

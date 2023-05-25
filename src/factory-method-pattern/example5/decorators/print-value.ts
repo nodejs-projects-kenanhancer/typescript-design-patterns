@@ -1,5 +1,5 @@
 import { BaseFieldDecorator } from "./base-field-decorator";
-import { FieldNameType } from "./field-decorator";
+import type { FieldNameType } from "../model/type";
 
 export class PrintValue<
   TRecord,

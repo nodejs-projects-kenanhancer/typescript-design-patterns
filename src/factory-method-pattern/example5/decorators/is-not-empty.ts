@@ -1,7 +1,7 @@
 import { BaseFieldDecorator } from "./base-field-decorator";
-import { FieldNameType } from "./field-decorator";
+import type { FieldNameType } from "../model/type";
 
-export class NotEmpty<
+export class IsNotEmpty<
   TRecord,
   TFieldName extends keyof TRecord
 > extends BaseFieldDecorator<TRecord, TFieldName, string> {
@@ -9,8 +9,8 @@ export class NotEmpty<
     fieldName: FieldNameType<TRecord, TFieldName, string>,
     fieldValue: string
   ): string {
-    if (fieldValue === "") {
-      throw new Error(`${fieldName} can't be empty string`);
+    if (fieldValue === "" || fieldValue === null || fieldValue === undefined) {
+      throw new Error(`${fieldName} should not be empty string`);
     }
 
     return super.execute(fieldName, fieldValue);

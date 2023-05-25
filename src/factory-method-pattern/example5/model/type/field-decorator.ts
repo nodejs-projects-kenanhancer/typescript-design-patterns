@@ -8,6 +8,16 @@ export type FieldNameType<
     : never
   : never;
 
+export type TFieldNameFromValue<
+  TRecord,
+  TFieldValue,
+  TFieldName extends keyof TRecord = keyof TRecord
+> = TFieldName extends any
+  ? TRecord[TFieldName] extends TFieldValue
+    ? TFieldName & string
+    : never
+  : never;
+
 export interface FieldDecorator<
   TRecord,
   TFieldName extends keyof TRecord,
@@ -19,17 +29,7 @@ export interface FieldDecorator<
   ): TFieldValue;
 }
 
-export type ValidatorRecord<T> = {
-  readonly [P in keyof T]: FieldDecorator<T, P, T[P]>;
-};
-
-export type ValidatorType<T> = {
-  readonly validators?: ValidatorRecord<T>;
-
-  validate(data: T): void;
-};
-
-// export type ValidatorType<T> = {
+// export type DTOValidatorType<T> = {
 //   readonly [P in keyof T as `${Extract<P, string>}Validator`]: FieldDecorator<
 //     T,
 //     P,

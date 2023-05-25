@@ -1,19 +1,19 @@
+import type { FieldNameType } from "../model/type";
 import { BaseFieldDecorator } from "./base-field-decorator";
-import { FieldDecorator, FieldNameType } from "./field-decorator";
 
 export class Pipe<
   TRecord,
   TFieldName extends keyof TRecord,
   TValue
 > extends BaseFieldDecorator<TRecord, TFieldName, TValue> {
-  private readonly fieldDecorators: FieldDecorator<
+  private readonly fieldDecorators: BaseFieldDecorator<
     TRecord,
     TFieldName,
     TValue
   >[];
 
   constructor(
-    ...fieldDecorators: FieldDecorator<TRecord, TFieldName, TValue>[]
+    ...fieldDecorators: BaseFieldDecorator<TRecord, TFieldName, TValue>[]
   ) {
     super();
 

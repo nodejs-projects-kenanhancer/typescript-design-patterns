@@ -1,35 +1,38 @@
 import {
-  AllowedValues,
-  MaxValue,
-  MinValue,
-  NotEmpty,
+  IsIn,
+  IsNotEmpty,
+  Max,
+  Min,
   NotNull,
   Pipe,
   PrintValue,
 } from "./decorators";
-import { User, Vehicle } from "./model";
+import { Shape, User, Vehicle } from "./model";
 import {
   COLOR,
   COUNTRY_NAMES,
   FUEL_TYPES,
   ROLES,
+  SHAPE_TYPES,
   VEHICLE_TYPES,
 } from "./model/constant";
-import { Validator } from "./model/validator";
+import { DTOValidator } from "./model/validator";
 
 class FactoryMethodClient {
   static main() {
-    this.testVehicle();
+    FactoryMethodClient.testVehicle();
 
-    this.testUser();
+    FactoryMethodClient.testUser();
+
+    FactoryMethodClient.testShape();
   }
 
   static testVehicle() {
-    const vehicleValidator = Validator.createInstance<Vehicle>({
-      type: new AllowedValues([...VEHICLE_TYPES], new PrintValue()),
-      color: new Pipe(new AllowedValues([...COLOR], new PrintValue())),
-      numberOfWheels: new MinValue(0, new MaxValue(8)),
-      fuelType: new Pipe(new AllowedValues([...FUEL_TYPES]), new PrintValue()),
+    const vehicleValidator = DTOValidator.createInstance<Vehicle>({
+      type: new IsIn([...VEHICLE_TYPES], new PrintValue()),
+      color: new Pipe(new IsIn([...COLOR], new PrintValue())),
+      numberOfWheels: new Min(0, new Max(8)),
+      fuelType: new Pipe(new IsIn([...FUEL_TYPES]), new PrintValue()),
     });
 
     Vehicle.setValidator(vehicleValidator);
@@ -52,13 +55,13 @@ class FactoryMethodClient {
   }
 
   static testUser() {
-    const userValidator = Validator.createInstance<User>({
-      age: new MinValue(1, new MaxValue(120)),
-      country: new AllowedValues([...COUNTRY_NAMES]),
-      email: new NotEmpty(),
-      name: new Pipe(new NotEmpty(), new NotNull()),
-      password: new Pipe(new NotEmpty(), new NotNull(), new PrintValue()),
-      role: new AllowedValues([...ROLES]),
+    const userValidator = DTOValidator.createInstance<User>({
+      age: new Min(1, new Max(120)),
+      country: new IsIn([...COUNTRY_NAMES]),
+      email: new IsNotEmpty(),
+      name: new Pipe(new IsNotEmpty(), new NotNull()),
+      password: new Pipe(new IsNotEmpty(), new NotNull(), new PrintValue()),
+      role: new IsIn([...ROLES]),
     });
 
     const member = User.createMember(
@@ -71,6 +74,28 @@ class FactoryMethodClient {
       },
       userValidator
     );
+
+    console.log(member);
+  }
+
+  static testShape() {
+    const shapeValidator = DTOValidator.createInstance<Shape>({
+      area: new Pipe(new Min(0), new Max(100)),
+      perimeter: new Pipe(new Min(0), new Max(100)),
+      type: new IsIn([...SHAPE_TYPES]),
+    });
+
+    const circle = Shape.createCircle(10, shapeValidator);
+
+    const rectangle = Shape.createRectangle(10, 20, shapeValidator);
+
+    const square = Shape.createSquare(10, shapeValidator);
+
+    console.log(circle);
+
+    console.log(rectangle);
+
+    console.log(square);
   }
 }
 

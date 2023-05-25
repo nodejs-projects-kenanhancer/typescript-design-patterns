@@ -1,5 +1,5 @@
-import { FieldDecorator, ValidatorType } from "../decorators";
 import { COUNTRY_NAMES, RoleType, type CountryNames } from "./constant";
+import type { DTOValidatorType, FieldDecorator } from "./type";
 
 export interface Validator<T> {
   validate(data: T): void;
@@ -60,7 +60,7 @@ export class CountryValidator implements Validator<UserInputDTO> {
   }
 }
 
-export type UserInputDTO = Omit<Pick<User, keyof User>, "role">;
+export type UserInputDTO = Omit<User, "role">;
 
 export class User {
   readonly name: string;
@@ -88,7 +88,7 @@ export class User {
 
   static createUser(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);
@@ -101,7 +101,7 @@ export class User {
 
   static createMember(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);
@@ -114,7 +114,7 @@ export class User {
 
   static createModerator(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);
@@ -127,7 +127,7 @@ export class User {
 
   static createAdmin(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);
@@ -140,7 +140,7 @@ export class User {
 
   static createSuperAdmin(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);
@@ -153,7 +153,7 @@ export class User {
 
   static createEditor(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);
@@ -166,7 +166,7 @@ export class User {
 
   static createGuest(
     userInput: UserInputDTO,
-    validator?: ValidatorType<UserInputDTO>
+    validator?: DTOValidatorType<UserInputDTO>
   ) {
     if (validator) {
       validator.validate(userInput);

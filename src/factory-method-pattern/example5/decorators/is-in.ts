@@ -1,7 +1,7 @@
+import type { FieldNameType } from "../model/type";
 import { BaseFieldDecorator } from "./base-field-decorator";
-import { FieldDecorator, FieldNameType } from "./field-decorator";
 
-export class AllowedValues<
+export class IsIn<
   TRecord,
   TFieldName extends keyof TRecord,
   TFieldValue,
@@ -11,7 +11,7 @@ export class AllowedValues<
 
   constructor(
     allowedValues: TValues,
-    nextFieldDecorator?: FieldDecorator<TRecord, TFieldName, TFieldValue>
+    nextFieldDecorator?: BaseFieldDecorator<TRecord, TFieldName, TFieldValue>
   ) {
     super(nextFieldDecorator);
 
@@ -22,8 +22,10 @@ export class AllowedValues<
     fieldName: FieldNameType<TRecord, TFieldName, TFieldValue>,
     fieldValue: TFieldValue
   ): TFieldValue {
-    if (!this.allowedValues.includes(fieldValue)) {
-      throw new Error(`${fieldName} should be one of [${this.allowedValues}]`);
+    if (!this.allowedValues.some((value) => value === fieldValue)) {
+      throw new Error(
+        `${fieldName} must be one of the following values: ${this.allowedValues}`
+      );
     }
 
     return super.execute(fieldName, fieldValue);

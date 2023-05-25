@@ -1,9 +1,12 @@
-import { ShapeType } from "./type";
+import type { DTOValidatorType, ShapeType, ToDTO } from "./type";
+import { DTOValidator } from "./validator";
 
 export class Shape {
   readonly type: ShapeType;
   readonly area: number;
   readonly perimeter: number;
+  private static validator: DTOValidatorType<Shape> =
+    DTOValidator.createDefaultInstance();
 
   private constructor(type: ShapeType, area: number, perimeter: number) {
     this.type = type;
@@ -11,44 +14,91 @@ export class Shape {
     this.perimeter = perimeter;
   }
 
-  static createCircle(radius: number): Shape {
+  private static validate(
+    dto: ToDTO<Shape>,
+    validator?: DTOValidatorType<Shape>
+  ) {
+    const _validator = validator || Shape.validator;
+
+    if (_validator) {
+      _validator.validate(dto);
+    }
+  }
+
+  static createCircle(
+    radius: number,
+    validator?: DTOValidatorType<Shape>
+  ): Shape {
     const area = Math.PI * radius * radius;
     const perimeter = 2 * Math.PI * radius;
 
-    return new Shape("Circle", area, perimeter);
+    const shape = new Shape("Circle", area, perimeter);
+
+    Shape.validate(shape, validator);
+
+    return shape;
   }
 
-  static createRectangle(length: number, width: number) {
+  static createRectangle(
+    length: number,
+    width: number,
+    validator?: DTOValidatorType<Shape>
+  ) {
     const area = length * width;
     const perimeter = 2 * (length + width);
 
-    return new Shape("Rectangle", area, perimeter);
+    const shape = new Shape("Rectangle", area, perimeter);
+
+    Shape.validate(shape, validator);
+
+    return shape;
   }
 
-  static createTriangle(side1: number, side2: number, side3: number) {
+  static createTriangle(
+    side1: number,
+    side2: number,
+    side3: number,
+    validator?: DTOValidatorType<Shape>
+  ) {
     // Assuming the sides form a valid triangle
     const perimeter = side1 + side2 + side3;
     // Using Heron's formula to calculate the area
     const s = perimeter / 2;
     const area = Math.sqrt(s * (s - side1) * (s - side2) * (s - side3));
 
-    return new Shape("Triangle", area, perimeter);
+    const shape = new Shape("Triangle", area, perimeter);
+
+    Shape.validate(shape, validator);
+
+    return shape;
   }
 
-  static createSquare(side: number) {
+  static createSquare(side: number, validator?: DTOValidatorType<Shape>) {
     const area = side * side;
     const perimeter = 4 * side;
 
-    return new Shape("Square", area, perimeter);
+    const shape = new Shape("Square", area, perimeter);
+
+    Shape.validate(shape, validator);
+
+    return shape;
   }
 
-  static createEllipse(semiMajorAxis: number, semiMinorAxis: number) {
+  static createEllipse(
+    semiMajorAxis: number,
+    semiMinorAxis: number,
+    validator?: DTOValidatorType<Shape>
+  ) {
     const area = Math.PI * semiMajorAxis * semiMinorAxis;
     const perimeter =
       2 *
       Math.PI *
       Math.sqrt(semiMajorAxis * semiMajorAxis + semiMinorAxis * semiMinorAxis);
 
-    return new Shape("Ellipse", area, perimeter);
+    const shape = new Shape("Ellipse", area, perimeter);
+
+    Shape.validate(shape, validator);
+
+    return shape;
   }
 }
