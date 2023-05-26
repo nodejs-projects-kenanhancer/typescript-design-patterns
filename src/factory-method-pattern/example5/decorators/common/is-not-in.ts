@@ -1,5 +1,5 @@
-import type { FieldNameType } from "../model/type";
-import { BaseFieldDecorator } from "./base-field-decorator";
+import type { FieldNameType, ValidationOptions } from "../../model/type";
+import { BaseFieldDecorator } from "../base-field-decorator";
 
 export class IsNotIn<
   TRecord,
@@ -11,9 +11,10 @@ export class IsNotIn<
 
   constructor(
     deniedValues: TValues,
-    nextFieldDecorator?: BaseFieldDecorator<TRecord, TFieldName, TFieldValue>
+    nextFieldDecorator?: BaseFieldDecorator<TRecord, TFieldName, TFieldValue>,
+    validationOptions?: ValidationOptions<TFieldName, TFieldValue>
   ) {
-    super(nextFieldDecorator);
+    super(nextFieldDecorator, validationOptions);
 
     this.deniedValues = deniedValues;
   }
@@ -23,7 +24,9 @@ export class IsNotIn<
     fieldValue: TFieldValue
   ): TFieldValue {
     if (this.deniedValues.some((value) => value === fieldValue)) {
-      throw new Error(
+      this.throwError(
+        fieldName,
+        fieldValue,
         `${fieldName} should not be one of the following values: ${this.deniedValues}`
       );
     }

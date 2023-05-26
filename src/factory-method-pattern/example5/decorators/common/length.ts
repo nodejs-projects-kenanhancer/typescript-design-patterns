@@ -1,5 +1,5 @@
-import type { FieldNameType } from "../model/type";
-import { BaseFieldDecorator } from "./base-field-decorator";
+import type { FieldNameType } from "../../model/type";
+import { BaseFieldDecorator } from "../base-field-decorator";
 
 export class Length<
   TRecord,

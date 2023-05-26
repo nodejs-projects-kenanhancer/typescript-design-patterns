@@ -1,5 +1,5 @@
-import { BaseFieldDecorator } from "./base-field-decorator";
-import type { FieldNameType } from "../model/type";
+import type { FieldNameType } from "../../model/type";
+import { BaseFieldDecorator } from "../base-field-decorator";
 
 export class IsEmpty<
   TRecord,
@@ -13,7 +13,11 @@ export class IsEmpty<
       fieldValue !== "" ||
       (fieldValue !== null && fieldValue !== undefined)
     ) {
-      throw new Error(`${fieldName} must be empty string`);
+      this.throwError(
+        fieldName,
+        fieldValue,
+        `${fieldName} must be empty string`
+      );
     }
 
     return super.execute(fieldName, fieldValue);

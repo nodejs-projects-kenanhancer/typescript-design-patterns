@@ -1,12 +1,5 @@
-import {
-  IsIn,
-  IsNotEmpty,
-  Max,
-  Min,
-  NotNull,
-  Pipe,
-  PrintValue,
-} from "./decorators";
+import { IsIn, IsNotEmpty, Max, Min, Pipe, PrintValue } from "./decorators";
+import { IsDefined } from "./decorators/common";
 import { Shape, User, Vehicle } from "./model";
 import {
   COLOR,
@@ -31,7 +24,7 @@ class FactoryMethodClient {
     const vehicleValidator = DTOValidator.createInstance<Vehicle>({
       type: new IsIn([...VEHICLE_TYPES], new PrintValue()),
       color: new Pipe(new IsIn([...COLOR], new PrintValue())),
-      numberOfWheels: new Min(0, new Max(8)),
+      numberOfWheels: new Min(0, new Max(8, new PrintValue())),
       fuelType: new Pipe(new IsIn([...FUEL_TYPES]), new PrintValue()),
     });
 
@@ -59,8 +52,8 @@ class FactoryMethodClient {
       age: new Min(1, new Max(120)),
       country: new IsIn([...COUNTRY_NAMES]),
       email: new IsNotEmpty(),
-      name: new Pipe(new IsNotEmpty(), new NotNull()),
-      password: new Pipe(new IsNotEmpty(), new NotNull(), new PrintValue()),
+      name: new Pipe(new IsNotEmpty(), new IsDefined()),
+      password: new Pipe(new IsNotEmpty(), new IsDefined(), new PrintValue()),
       role: new IsIn([...ROLES]),
     });
 
@@ -80,7 +73,7 @@ class FactoryMethodClient {
 
   static testShape() {
     const shapeValidator = DTOValidator.createInstance<Shape>({
-      area: new Pipe(new Min(0), new Max(100)),
+      area: new Pipe(new Min(0), new Max(1000)),
       perimeter: new Pipe(new Min(0), new Max(100)),
       type: new IsIn([...SHAPE_TYPES]),
     });

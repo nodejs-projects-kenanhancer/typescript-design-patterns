@@ -1,5 +1,5 @@
-import type { FieldNameType } from "../model/type";
-import { BaseFieldDecorator } from "./base-field-decorator";
+import type { FieldNameType, ValidationOptions } from "../../model/type";
+import { BaseFieldDecorator } from "../base-field-decorator";
 
 export class IsIn<
   TRecord,
@@ -11,9 +11,10 @@ export class IsIn<
 
   constructor(
     allowedValues: TValues,
-    nextFieldDecorator?: BaseFieldDecorator<TRecord, TFieldName, TFieldValue>
+    nextFieldDecorator?: BaseFieldDecorator<TRecord, TFieldName, TFieldValue>,
+    validationOptions?: ValidationOptions<TFieldName, TFieldValue>
   ) {
-    super(nextFieldDecorator);
+    super(nextFieldDecorator, validationOptions);
 
     this.allowedValues = allowedValues;
   }
@@ -23,7 +24,9 @@ export class IsIn<
     fieldValue: TFieldValue
   ): TFieldValue {
     if (!this.allowedValues.some((value) => value === fieldValue)) {
-      throw new Error(
+      this.throwError(
+        fieldName,
+        fieldValue,
         `${fieldName} must be one of the following values: ${this.allowedValues}`
       );
     }

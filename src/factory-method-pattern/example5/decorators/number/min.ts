@@ -2,8 +2,8 @@ import type {
   FieldNameType,
   TFieldNameFromValue,
   ValidationOptions,
-} from "../model/type";
-import { BaseFieldDecorator } from "./base-field-decorator";
+} from "../../model/type";
+import { BaseFieldDecorator } from "../base-field-decorator";
 
 export class Min<
   TRecord,
