@@ -4,11 +4,11 @@ import { BaseFieldDecorator } from "../base-field-decorator";
 export class IsNotEmpty<
   TRecord,
   TFieldName extends keyof TRecord
-> extends BaseFieldDecorator<TRecord, TFieldName, string> {
+> extends BaseFieldDecorator<TRecord, TFieldName, any> {
   execute(
-    fieldName: FieldNameType<TRecord, TFieldName, string>,
-    fieldValue: string
-  ): string {
+    fieldName: FieldNameType<TRecord, TFieldName, any>,
+    fieldValue: any
+  ): any {
     if (fieldValue === "" || fieldValue === null || fieldValue === undefined) {
       this.throwError(
         fieldName,

@@ -1,4 +1,5 @@
 import { COUNTRY_NAMES, RoleType, type CountryNames } from "./constant";
+import { MobilePhoneLocale } from "./constant/phones";
 import type { DTOValidatorType, FieldDecorator } from "./type";
 
 export interface Validator<T> {
@@ -68,6 +69,7 @@ export class User {
   readonly email: string;
   readonly password: string;
   readonly country: CountryNames;
+  readonly mobilePhone: string;
   readonly role: RoleType;
 
   private constructor(
@@ -76,6 +78,7 @@ export class User {
     email: string,
     password: string,
     country: CountryNames,
+    mobilePhone: string,
     role: RoleType
   ) {
     this.name = name;
@@ -83,6 +86,7 @@ export class User {
     this.email = email;
     this.password = password;
     this.country = country;
+    this.mobilePhone = mobilePhone;
     this.role = role;
   }
 
@@ -94,9 +98,9 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "Member");
+    return new User(name, age, email, password, country, mobilePhone, "Member");
   }
 
   static createMember(
@@ -107,9 +111,9 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "Member");
+    return new User(name, age, email, password, country, mobilePhone, "Member");
   }
 
   static createModerator(
@@ -120,9 +124,17 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "Moderator");
+    return new User(
+      name,
+      age,
+      email,
+      password,
+      country,
+      mobilePhone,
+      "Moderator"
+    );
   }
 
   static createAdmin(
@@ -133,9 +145,9 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "Admin");
+    return new User(name, age, email, password, country, mobilePhone, "Admin");
   }
 
   static createSuperAdmin(
@@ -146,9 +158,17 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "SuperAdmin");
+    return new User(
+      name,
+      age,
+      email,
+      password,
+      country,
+      mobilePhone,
+      "SuperAdmin"
+    );
   }
 
   static createEditor(
@@ -159,9 +179,9 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "Editor");
+    return new User(name, age, email, password, country, mobilePhone, "Editor");
   }
 
   static createGuest(
@@ -172,8 +192,8 @@ export class User {
       validator.validate(userInput);
     }
 
-    const { name, age, country, email, password } = userInput;
+    const { name, age, country, email, password, mobilePhone } = userInput;
 
-    return new User(name, age, email, password, country, "Guest");
+    return new User(name, age, email, password, country, mobilePhone, "Guest");
   }
 }

@@ -1,756 +1,950 @@
-export const LANGUAGES = {
-  aa: {
+export interface Language {
+  name: string;
+  code: string;
+  native: string;
+  rtl?: number;
+}
+
+export const LANGUAGES = [
+  {
     name: "Afar",
     native: "Afar",
+    code: "aa",
   },
-  ab: {
+  {
     name: "Abkhazian",
     native: "Аҧсуа",
+    code: "ab",
   },
-  af: {
+  {
     name: "Afrikaans",
     native: "Afrikaans",
+    code: "af",
   },
-  ak: {
+  {
     name: "Akan",
     native: "Akana",
+    code: "ak",
   },
-  am: {
+  {
     name: "Amharic",
     native: "አማርኛ",
+    code: "am",
   },
-  an: {
+  {
     name: "Aragonese",
     native: "Aragonés",
+    code: "an",
   },
-  ar: {
+  {
     name: "Arabic",
     native: "العربية",
     rtl: 1,
+    code: "ar",
   },
-  as: {
+  {
     name: "Assamese",
     native: "অসমীয়া",
+    code: "as",
   },
-  av: {
+  {
     name: "Avar",
     native: "Авар",
+    code: "av",
   },
-  ay: {
+  {
     name: "Aymara",
     native: "Aymar",
+    code: "ay",
   },
-  az: {
+  {
     name: "Azerbaijani",
     native: "Azərbaycanca / آذربايجان",
+    code: "az",
   },
-  ba: {
+  {
     name: "Bashkir",
     native: "Башҡорт",
+    code: "ba",
   },
-  be: {
+  {
     name: "Belarusian",
     native: "Беларуская",
+    code: "be",
   },
-  bg: {
+  {
     name: "Bulgarian",
     native: "Български",
+    code: "bg",
   },
-  bh: {
+  {
     name: "Bihari",
     native: "भोजपुरी",
+    code: "bh",
   },
-  bi: {
+  {
     name: "Bislama",
     native: "Bislama",
+    code: "bi",
   },
-  bm: {
+  {
     name: "Bambara",
     native: "Bamanankan",
+    code: "bm",
   },
-  bn: {
+  {
     name: "Bengali",
     native: "বাংলা",
+    code: "bn",
   },
-  bo: {
+  {
     name: "Tibetan",
     native: "བོད་ཡིག / Bod skad",
+    code: "bo",
   },
-  br: {
+  {
     name: "Breton",
     native: "Brezhoneg",
+    code: "br",
   },
-  bs: {
+  {
     name: "Bosnian",
     native: "Bosanski",
+    code: "bs",
   },
-  ca: {
+  {
     name: "Catalan",
     native: "Català",
+    code: "ca",
   },
-  ce: {
+  {
     name: "Chechen",
     native: "Нохчийн",
+    code: "ce",
   },
-  ch: {
+  {
     name: "Chamorro",
     native: "Chamoru",
+    code: "ch",
   },
-  co: {
+  {
     name: "Corsican",
     native: "Corsu",
+    code: "co",
   },
-  cr: {
+  {
     name: "Cree",
     native: "Nehiyaw",
+    code: "cr",
   },
-  cs: {
+  {
     name: "Czech",
     native: "Čeština",
+    code: "cs",
   },
-  cu: {
+  {
     name: "Old Church Slavonic / Old Bulgarian",
     native: "словѣньскъ / slověnĭskŭ",
+    code: "cu",
   },
-  cv: {
+  {
     name: "Chuvash",
     native: "Чăваш",
+    code: "cv",
   },
-  cy: {
+  {
     name: "Welsh",
     native: "Cymraeg",
+    code: "cy",
   },
-  da: {
+  {
     name: "Danish",
     native: "Dansk",
+    code: "da",
   },
-  de: {
+  {
     name: "German",
     native: "Deutsch",
+    code: "de",
   },
-  dv: {
+  {
     name: "Divehi",
     native: "ދިވެހިބަސް",
     rtl: 1,
+    code: "dv",
   },
-  dz: {
+  {
     name: "Dzongkha",
     native: "ཇོང་ཁ",
+    code: "dz",
   },
-  ee: {
+  {
     name: "Ewe",
     native: "Ɛʋɛ",
+    code: "ee",
   },
-  el: {
+  {
     name: "Greek",
     native: "Ελληνικά",
+    code: "el",
   },
-  en: {
+  {
     name: "English",
     native: "English",
+    code: "en",
   },
-  eo: {
+  {
     name: "Esperanto",
     native: "Esperanto",
+    code: "eo",
   },
-  es: {
+  {
     name: "Spanish",
     native: "Español",
+    code: "es",
   },
-  et: {
+  {
     name: "Estonian",
     native: "Eesti",
+    code: "et",
   },
-  eu: {
+  {
     name: "Basque",
     native: "Euskara",
+    code: "eu",
   },
-  fa: {
+  {
     name: "Persian",
     native: "فارسی",
     rtl: 1,
+    code: "fa",
   },
-  ff: {
+  {
     name: "Peul",
     native: "Fulfulde",
+    code: "ff",
   },
-  fi: {
+  {
     name: "Finnish",
     native: "Suomi",
+    code: "fi",
   },
-  fj: {
+  {
     name: "Fijian",
     native: "Na Vosa Vakaviti",
+    code: "fj",
   },
-  fo: {
+  {
     name: "Faroese",
     native: "Føroyskt",
+    code: "fo",
   },
-  fr: {
+  {
     name: "French",
     native: "Français",
+    code: "fr",
   },
-  fy: {
+  {
     name: "West Frisian",
     native: "Frysk",
+    code: "fy",
   },
-  ga: {
+  {
     name: "Irish",
     native: "Gaeilge",
+    code: "ga",
   },
-  gd: {
+  {
     name: "Scottish Gaelic",
     native: "Gàidhlig",
+    code: "gd",
   },
-  gl: {
+  {
     name: "Galician",
     native: "Galego",
+    code: "gl",
   },
-  gn: {
+  {
     name: "Guarani",
     native: "Avañe'ẽ",
+    code: "gn",
   },
-  gu: {
+  {
     name: "Gujarati",
     native: "ગુજરાતી",
+    code: "gu",
   },
-  gv: {
+  {
     name: "Manx",
     native: "Gaelg",
+    code: "gv",
   },
-  ha: {
+  {
     name: "Hausa",
     native: "هَوُسَ",
     rtl: 1,
+    code: "ha",
   },
-  he: {
+  {
     name: "Hebrew",
     native: "עברית",
     rtl: 1,
+    code: "he",
   },
-  hi: {
+  {
     name: "Hindi",
     native: "हिन्दी",
+    code: "hi",
   },
-  ho: {
+  {
     name: "Hiri Motu",
     native: "Hiri Motu",
+    code: "ho",
   },
-  hr: {
+  {
     name: "Croatian",
     native: "Hrvatski",
+    code: "hr",
   },
-  ht: {
+  {
     name: "Haitian",
     native: "Krèyol ayisyen",
+    code: "ht",
   },
-  hu: {
+  {
     name: "Hungarian",
     native: "Magyar",
+    code: "hu",
   },
-  hy: {
+  {
     name: "Armenian",
     native: "Հայերեն",
+    code: "hy",
   },
-  hz: {
+  {
     name: "Herero",
     native: "Otsiherero",
+    code: "hz",
   },
-  ia: {
+  {
     name: "Interlingua",
     native: "Interlingua",
+    code: "ia",
   },
-  id: {
+  {
     name: "Indonesian",
     native: "Bahasa Indonesia",
+    code: "id",
   },
-  ie: {
+  {
     name: "Interlingue",
     native: "Interlingue",
+    code: "ie",
   },
-  ig: {
+  {
     name: "Igbo",
     native: "Igbo",
+    code: "ig",
   },
-  ii: {
+  {
     name: "Sichuan Yi",
     native: "ꆇꉙ / 四川彝语",
+    code: "ii",
   },
-  ik: {
+  {
     name: "Inupiak",
     native: "Iñupiak",
+    code: "ik",
   },
-  io: {
+  {
     name: "Ido",
     native: "Ido",
+    code: "io",
   },
-  is: {
+  {
     name: "Icelandic",
     native: "Íslenska",
+    code: "is",
   },
-  it: {
+  {
     name: "Italian",
     native: "Italiano",
+    code: "it",
   },
-  iu: {
+  {
     name: "Inuktitut",
     native: "ᐃᓄᒃᑎᑐᑦ",
+    code: "iu",
   },
-  ja: {
+  {
     name: "Japanese",
     native: "日本語",
+    code: "ja",
   },
-  jv: {
+  {
     name: "Javanese",
     native: "Basa Jawa",
+    code: "jv",
   },
-  ka: {
+  {
     name: "Georgian",
     native: "ქართული",
+    code: "ka",
   },
-  kg: {
+  {
     name: "Kongo",
     native: "KiKongo",
+    code: "kg",
   },
-  ki: {
+  {
     name: "Kikuyu",
     native: "Gĩkũyũ",
+    code: "ki",
   },
-  kj: {
+  {
     name: "Kuanyama",
     native: "Kuanyama",
+    code: "kj",
   },
-  kk: {
+  {
     name: "Kazakh",
     native: "Қазақша",
+    code: "kk",
   },
-  kl: {
+  {
     name: "Greenlandic",
     native: "Kalaallisut",
+    code: "kl",
   },
-  km: {
+  {
     name: "Cambodian",
     native: "ភាសាខ្មែរ",
+    code: "km",
   },
-  kn: {
+  {
     name: "Kannada",
     native: "ಕನ್ನಡ",
+    code: "kn",
   },
-  ko: {
+  {
     name: "Korean",
     native: "한국어",
+    code: "ko",
   },
-  kr: {
+  {
     name: "Kanuri",
     native: "Kanuri",
+    code: "kr",
   },
-  ks: {
+  {
     name: "Kashmiri",
     native: "कश्मीरी / كشميري",
     rtl: 1,
+    code: "ks",
   },
-  ku: {
+  {
     name: "Kurdish",
     native: "Kurdî / كوردی",
     rtl: 1,
+    code: "ku",
   },
-  kv: {
+  {
     name: "Komi",
     native: "Коми",
+    code: "kv",
   },
-  kw: {
+  {
     name: "Cornish",
     native: "Kernewek",
+    code: "kw",
   },
-  ky: {
+  {
     name: "Kyrgyz",
     native: "Кыргызча",
+    code: "ky",
   },
-  la: {
+  {
     name: "Latin",
     native: "Latina",
+    code: "la",
   },
-  lb: {
+  {
     name: "Luxembourgish",
     native: "Lëtzebuergesch",
+    code: "lb",
   },
-  lg: {
+  {
     name: "Ganda",
     native: "Luganda",
+    code: "lg",
   },
-  li: {
+  {
     name: "Limburgian",
     native: "Limburgs",
+    code: "li",
   },
-  ln: {
+  {
     name: "Lingala",
     native: "Lingála",
+    code: "ln",
   },
-  lo: {
+  {
     name: "Laotian",
     native: "ລາວ / Pha xa lao",
+    code: "lo",
   },
-  lt: {
+  {
     name: "Lithuanian",
     native: "Lietuvių",
+    code: "lt",
   },
-  lu: {
+  {
     name: "Luba-Katanga",
     native: "Tshiluba",
+    code: "lu",
   },
-  lv: {
+  {
     name: "Latvian",
     native: "Latviešu",
+    code: "lv",
   },
-  mg: {
+  {
     name: "Malagasy",
     native: "Malagasy",
+    code: "mg",
   },
-  mh: {
+  {
     name: "Marshallese",
     native: "Kajin Majel / Ebon",
+    code: "mh",
   },
-  mi: {
+  {
     name: "Maori",
     native: "Māori",
+    code: "mi",
   },
-  mk: {
+  {
     name: "Macedonian",
     native: "Македонски",
+    code: "mk",
   },
-  ml: {
+  {
     name: "Malayalam",
     native: "മലയാളം",
+    code: "ml",
   },
-  mn: {
+  {
     name: "Mongolian",
     native: "Монгол",
+    code: "mn",
   },
-  mo: {
+  {
     name: "Moldovan",
     native: "Moldovenească",
+    code: "mo",
   },
-  mr: {
+  {
     name: "Marathi",
     native: "मराठी",
+    code: "mr",
   },
-  ms: {
+  {
     name: "Malay",
     native: "Bahasa Melayu",
+    code: "ms",
   },
-  mt: {
+  {
     name: "Maltese",
     native: "bil-Malti",
+    code: "mt",
   },
-  my: {
+  {
     name: "Burmese",
     native: "မြန်မာစာ",
+    code: "my",
   },
-  na: {
+  {
     name: "Nauruan",
     native: "Dorerin Naoero",
+    code: "na",
   },
-  nb: {
+  {
     name: "Norwegian Bokmål",
     native: "Norsk bokmål",
+    code: "nb",
   },
-  nd: {
+  {
     name: "North Ndebele",
     native: "Sindebele",
+    code: "nd",
   },
-  ne: {
+  {
     name: "Nepali",
     native: "नेपाली",
+    code: "ne",
   },
-  ng: {
+  {
     name: "Ndonga",
     native: "Oshiwambo",
+    code: "ng",
   },
-  nl: {
+  {
     name: "Dutch",
     native: "Nederlands",
+    code: "nl",
   },
-  nn: {
+  {
     name: "Norwegian Nynorsk",
     native: "Norsk nynorsk",
+    code: "nn",
   },
-  no: {
+  {
     name: "Norwegian",
     native: "Norsk",
+    code: "no",
   },
-  nr: {
+  {
     name: "South Ndebele",
     native: "isiNdebele",
+    code: "nr",
   },
-  nv: {
+  {
     name: "Navajo",
     native: "Diné bizaad",
+    code: "nv",
   },
-  ny: {
+  {
     name: "Chichewa",
     native: "Chi-Chewa",
+    code: "ny",
   },
-  oc: {
+  {
     name: "Occitan",
     native: "Occitan",
+    code: "oc",
   },
-  oj: {
+  {
     name: "Ojibwa",
     native: "ᐊᓂᔑᓈᐯᒧᐎᓐ / Anishinaabemowin",
+    code: "oj",
   },
-  om: {
+  {
     name: "Oromo",
     native: "Oromoo",
+    code: "om",
   },
-  or: {
+  {
     name: "Oriya",
     native: "ଓଡ଼ିଆ",
+    code: "or",
   },
-  os: {
+  {
     name: "Ossetian / Ossetic",
     native: "Иронау",
+    code: "os",
   },
-  pa: {
+  {
     name: "Panjabi / Punjabi",
     native: "ਪੰਜਾਬੀ / पंजाबी / پنجابي",
+    code: "pa",
   },
-  pi: {
+  {
     name: "Pali",
     native: "Pāli / पाऴि",
+    code: "pi",
   },
-  pl: {
+  {
     name: "Polish",
     native: "Polski",
+    code: "pl",
   },
-  ps: {
+  {
     name: "Pashto",
     native: "پښتو",
     rtl: 1,
+    code: "ps",
   },
-  pt: {
+  {
     name: "Portuguese",
     native: "Português",
+    code: "pt",
   },
-  qu: {
+  {
     name: "Quechua",
     native: "Runa Simi",
+    code: "qu",
   },
-  rm: {
+  {
     name: "Raeto Romance",
     native: "Rumantsch",
+    code: "rm",
   },
-  rn: {
+  {
     name: "Kirundi",
     native: "Kirundi",
+    code: "rn",
   },
-  ro: {
+  {
     name: "Romanian",
     native: "Română",
+    code: "ro",
   },
-  ru: {
+  {
     name: "Russian",
     native: "Русский",
+    code: "ru",
   },
-  rw: {
+  {
     name: "Rwandi",
     native: "Kinyarwandi",
+    code: "rw",
   },
-  sa: {
+  {
     name: "Sanskrit",
     native: "संस्कृतम्",
+    code: "sa",
   },
-  sc: {
+  {
     name: "Sardinian",
     native: "Sardu",
+    code: "sc",
   },
-  sd: {
+  {
     name: "Sindhi",
     native: "सिनधि",
+    code: "sd",
   },
-  se: {
+  {
     name: "Northern Sami",
     native: "Sámegiella",
+    code: "se",
   },
-  sg: {
+  {
     name: "Sango",
     native: "Sängö",
+    code: "sg",
   },
-  sh: {
+  {
     name: "Serbo-Croatian",
     native: "Srpskohrvatski / Српскохрватски",
+    code: "sh",
   },
-  si: {
+  {
     name: "Sinhalese",
     native: "සිංහල",
+    code: "si",
   },
-  sk: {
+  {
     name: "Slovak",
     native: "Slovenčina",
+    code: "sk",
   },
-  sl: {
+  {
     name: "Slovenian",
     native: "Slovenščina",
+    code: "sl",
   },
-  sm: {
+  {
     name: "Samoan",
     native: "Gagana Samoa",
+    code: "sm",
   },
-  sn: {
+  {
     name: "Shona",
     native: "chiShona",
+    code: "sn",
   },
-  so: {
+  {
     name: "Somalia",
     native: "Soomaaliga",
+    code: "so",
   },
-  sq: {
+  {
     name: "Albanian",
     native: "Shqip",
+    code: "sq",
   },
-  sr: {
+  {
     name: "Serbian",
     native: "Српски",
+    code: "sr",
   },
-  ss: {
+  {
     name: "Swati",
     native: "SiSwati",
+    code: "ss",
   },
-  st: {
+  {
     name: "Southern Sotho",
     native: "Sesotho",
+    code: "st",
   },
-  su: {
+  {
     name: "Sundanese",
     native: "Basa Sunda",
+    code: "su",
   },
-  sv: {
+  {
     name: "Swedish",
     native: "Svenska",
+    code: "sv",
   },
-  sw: {
+  {
     name: "Swahili",
     native: "Kiswahili",
+    code: "sw",
   },
-  ta: {
+  {
     name: "Tamil",
     native: "தமிழ்",
+    code: "ta",
   },
-  te: {
+  {
     name: "Telugu",
     native: "తెలుగు",
+    code: "te",
   },
-  tg: {
+  {
     name: "Tajik",
     native: "Тоҷикӣ",
+    code: "tg",
   },
-  th: {
+  {
     name: "Thai",
     native: "ไทย / Phasa Thai",
+    code: "th",
   },
-  ti: {
+  {
     name: "Tigrinya",
     native: "ትግርኛ",
+    code: "ti",
   },
-  tk: {
+  {
     name: "Turkmen",
     native: "Туркмен / تركمن",
+    code: "tk",
   },
-  tl: {
+  {
     name: "Tagalog / Filipino",
     native: "Tagalog",
+    code: "tl",
   },
-  tn: {
+  {
     name: "Tswana",
     native: "Setswana",
+    code: "tn",
   },
-  to: {
+  {
     name: "Tonga",
     native: "Lea Faka-Tonga",
+    code: "to",
   },
-  tr: {
+  {
     name: "Turkish",
     native: "Türkçe",
+    code: "tr",
   },
-  ts: {
+  {
     name: "Tsonga",
     native: "Xitsonga",
+    code: "ts",
   },
-  tt: {
+  {
     name: "Tatar",
     native: "Tatarça",
+    code: "tt",
   },
-  tw: {
+  {
     name: "Twi",
     native: "Twi",
+    code: "tw",
   },
-  ty: {
+  {
     name: "Tahitian",
     native: "Reo Mā`ohi",
+    code: "ty",
   },
-  ug: {
+  {
     name: "Uyghur",
     native: "Uyƣurqə / ئۇيغۇرچە",
+    code: "ug",
   },
-  uk: {
+  {
     name: "Ukrainian",
     native: "Українська",
+    code: "uk",
   },
-  ur: {
+  {
     name: "Urdu",
     native: "اردو",
     rtl: 1,
+    code: "ur",
   },
-  uz: {
+  {
     name: "Uzbek",
     native: "Ўзбек",
+    code: "uz",
   },
-  ve: {
+  {
     name: "Venda",
     native: "Tshivenḓa",
+    code: "ve",
   },
-  vi: {
+  {
     name: "Vietnamese",
     native: "Tiếng Việt",
+    code: "vi",
   },
-  vo: {
+  {
     name: "Volapük",
     native: "Volapük",
+    code: "vo",
   },
-  wa: {
+  {
     name: "Walloon",
     native: "Walon",
+    code: "wa",
   },
-  wo: {
+  {
     name: "Wolof",
     native: "Wollof",
+    code: "wo",
   },
-  xh: {
+  {
     name: "Xhosa",
     native: "isiXhosa",
+    code: "xh",
   },
-  yi: {
+  {
     name: "Yiddish",
     native: "ייִדיש",
     rtl: 1,
+    code: "yi",
   },
-  yo: {
+  {
     name: "Yoruba",
     native: "Yorùbá",
+    code: "yo",
   },
-  za: {
+  {
     name: "Zhuang",
     native: "Cuengh / Tôô / 壮语",
+    code: "za",
   },
-  zh: {
+  {
     name: "Chinese",
     native: "中文",
+    code: "zh",
   },
-  zu: {
+  {
     name: "Zulu",
     native: "isiZulu",
+    code: "zu",
   },
-} as const;
+] as const satisfies readonly Language[];
 
-export const LANGUAGE_NAMES = Object.keys(LANGUAGES);
+export const LANGUAGE_NAMES = LANGUAGES.map((l) => l.name);
 
-export type LanguageType = keyof typeof LANGUAGES;
+export type LanguageCodes = (typeof LANGUAGES)[number]["code"];
+
+export type LanguageNames = (typeof LANGUAGES)[number]["name"];

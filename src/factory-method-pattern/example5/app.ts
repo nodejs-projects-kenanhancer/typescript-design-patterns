@@ -1,5 +1,6 @@
 import { IsIn, IsNotEmpty, Max, Min, Pipe, PrintValue } from "./decorators";
 import { IsDefined } from "./decorators/common";
+import { IsMobilePhone } from "./decorators/string/is-mobile-phone";
 import { Shape, User, Vehicle } from "./model";
 import {
   COLOR,
@@ -55,6 +56,7 @@ class FactoryMethodClient {
       name: new Pipe(new IsNotEmpty(), new IsDefined()),
       password: new Pipe(new IsNotEmpty(), new IsDefined(), new PrintValue()),
       role: new IsIn([...ROLES]),
+      mobilePhone: new IsMobilePhone("tr-TR"),
     });
 
     const member = User.createMember(
@@ -64,6 +66,7 @@ class FactoryMethodClient {
         country: "Afghanistan",
         email: "kh@kh.com",
         password: "11111",
+        mobilePhone: "+905455555555",
       },
       userValidator
     );

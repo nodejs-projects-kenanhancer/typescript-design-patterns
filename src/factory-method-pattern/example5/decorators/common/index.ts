@@ -8,3 +8,5 @@ export * from "./is-not-in";
 export * from "./is-optional";
 export * from "./length";
 export * from "./validate";
+export * from "./max-length";
+export * from "./min-length";
