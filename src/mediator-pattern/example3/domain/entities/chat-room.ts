@@ -51,6 +51,17 @@ export class ChatRoom implements ChatMediator {
     return topic.length > 0;
   }
 
+  private isUserAvailable(userId: string) {
+    return this.users.some((u) => u.id === userId);
+  }
+
+  private validateChatUserIdAvailability(userId: string) {
+    const isChatUserAvailable = this.isUserAvailable(userId);
+    if (!isChatUserAvailable) {
+      throw new Error(`${userId} user doesn't exists.`);
+    }
+  }
+
   addUser(user: User) {
     const isUserExist = this.users.includes(user);
     if (isUserExist) {
@@ -62,30 +73,32 @@ export class ChatRoom implements ChatMediator {
       throw new Error(`This chat room is full. Max users: ${maxUsers}`);
     }
 
-    this.notifyUsers(user, `has joined the chat at ${user.joinedAt}`);
-
     user.joinedAt = new Date();
     user.chatMediator = this;
     this.users.push(user);
+
+    this.notifyUsers(user.id, `has joined the chat at ${user.joinedAt}`);
   }
 
-  removeUser(user: User): void {
-    const index = this.users.findIndex((u) => u.id === user.id);
+  deleteUser(userId: string): void {
+    const user = this.getUser(userId);
 
-    if (index === -1) {
-      throw new Error(`${user.name} user doesn't exists.`);
-    }
+    const index = this.users.indexOf(user);
 
     user.leftAt = new Date();
     this.users.splice(index, 1);
-    this.notifyUsers(user, `has left the chat at ${user.leftAt}`);
+    
+    this.notifyUsers(userId, `has left the chat at ${user.leftAt}`);
   }
 
-  notifyUsers(fromUser: User, message: string): void {
-    const isUserExist = this.users.includes(fromUser);
-    if (!isUserExist) {
-      throw new Error(`${fromUser.name} user doesn't exists.`);
-    }
+  getUser(userId: string) {
+    this.validateChatUserIdAvailability(userId);
+
+    return this.users.find((u) => u.id === userId);
+  }
+
+  notifyUsers(fromUserId: string, message: string): void {
+    const fromUser = this.getUser(fromUserId);
 
     this.users.forEach((toUser) => {
       if (toUser !== fromUser) {
@@ -94,11 +107,9 @@ export class ChatRoom implements ChatMediator {
     });
   }
 
-  notifyUser(fromUser: User, toUser: User, message: string): void {
-    const isUserExist = this.users.includes(toUser);
-    if (!isUserExist) {
-      throw new Error(`${toUser.name} user doesn't exists.`);
-    }
+  notifyUser(fromUserId: string, message: string, toUserId: string): void {
+    const fromUser = this.getUser(fromUserId);
+    const toUser = this.getUser(toUserId);
 
     toUser.receiveMessage(message, fromUser);
   }

@@ -34,9 +34,9 @@ export class ChatUser implements User {
     console.log(`${this.name} send: ${message}`);
 
     if (toUser) {
-      this.chatMediator.notifyUser(this, toUser, message);
+      this.chatMediator.notifyUser(this.id, message, toUser.id);
     } else {
-      this.chatMediator.notifyUsers(this, message);
+      this.chatMediator.notifyUsers(this.id, message);
     }
   }
 
