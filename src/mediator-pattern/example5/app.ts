@@ -76,44 +76,55 @@ class Person {
   }
 }
 
-class PersonListener {
-  validateEatParameters(food: string) {
+interface PersonListener {
+  validateEatParameters(food: string): void;
+  logEatAction(food: string, person: Person): void;
+  validateSleepParameters(hours: number): void;
+  logSleepAction(hours: number, person: Person): void;
+  validateWorkParameters(hours: number): void;
+  logWorkAction(hours: number, person: Person): void;
+  validatePlayParameters(game: string): void;
+  logPlayAction(game: string, person: Person): void;
+}
+
+class PersonActions implements PersonListener {
+  validateEatParameters(food: string): void {
     if (food.length === 0) {
       throw new Error("food parameter can't be empty");
     }
   }
 
-  logEatAction(food: string, person: Person) {
+  logEatAction(food: string, person: Person): void {
     console.log(`${person.name} is eating ${food}`);
   }
 
-  validateSleepParameters(hours: number) {
+  validateSleepParameters(hours: number): void {
     if (hours <= 0) {
       throw new Error("hours parameter can't be less than 1");
     }
   }
 
-  logSleepAction(hours: number, person: Person) {
+  logSleepAction(hours: number, person: Person): void {
     console.log(`${person.name} is sleeping for ${hours} hours`);
   }
 
-  validateWorkParameters(hours: number) {
+  validateWorkParameters(hours: number): void {
     if (hours <= 0) {
       throw new Error("hours parameter can't be less than 1");
     }
   }
 
-  logWorkAction(hours: number, person: Person) {
+  logWorkAction(hours: number, person: Person): void {
     console.log(`${person.name} is working for ${hours} hours`);
   }
 
-  validatePlayParameters(game: string) {
+  validatePlayParameters(game: string): void {
     if (game.length === 0) {
       throw new Error("game parameter can't be empty");
     }
   }
 
-  logPlayAction(game: string, person: Person) {
+  logPlayAction(game: string, person: Person): void {
     console.log(`${person.name} is playing ${game}`);
   }
 }
@@ -121,7 +132,7 @@ class PersonListener {
 // Client
 class Client {
   static main() {
-    const dispatcher = Dispatcher.Create(new PersonListener());
+    const dispatcher = Dispatcher.Create(new PersonActions());
 
     const john = new Person("John", dispatcher);
 
