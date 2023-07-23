@@ -3,6 +3,10 @@ import { AirplaneRequest } from "../../mediator";
 
 export interface AirplaneService {
   register(airplane: Airplane): void;
-  receive(message: string): void;
-  sendRequest(request: AirplaneRequest, details?: Record<string, any>): void;
+  receive(from: Airplane, message: string): void;
+  sendRequest(
+    request: AirplaneRequest,
+    from: Airplane,
+    details?: Record<string, any>
+  ): void;
 }
