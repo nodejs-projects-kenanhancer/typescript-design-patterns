@@ -1,6 +1,7 @@
 import { Airplane } from "../colleague";
 import { AirplaneRequest } from "./airplane-request";
 
+// Mediator interface
 export interface ControlTower {
   register(airplane: Airplane): void;
   receive(

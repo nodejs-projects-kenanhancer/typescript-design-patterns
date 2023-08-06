@@ -1,4 +1,3 @@
-// Mediator interface
 export enum AirplaneRequest {
   Landing,
   Takeoff,
@@ -11,5 +10,5 @@ export enum AirplaneRequest {
   RunwayCondition,
   WeatherUpdate,
   FlightPlan,
-  PassengerCount
+  PassengerCount,
 }

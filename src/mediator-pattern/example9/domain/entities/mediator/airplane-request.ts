@@ -1,4 +1,3 @@
-// Mediator interface
 export enum AirplaneRequest {
   Landing,
   Takeoff,
