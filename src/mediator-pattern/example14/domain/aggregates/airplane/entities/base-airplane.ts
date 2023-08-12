@@ -3,7 +3,15 @@ import {
   AirplaneMediator,
   AirplaneOutgoingRequests,
   AirplaneResponse,
+  AirplaneResponseMappingVisitor,
   ControlTowerMediator,
+  EmergencyLandingIncomingResponse,
+  EngineRefuelingIncomingResponse,
+  EngineShutdownIncomingResponse,
+  LandingIncomingResponse,
+  RunwayExitIncomingResponse,
+  TakeoffSuccessIncomingResponse,
+  TaxiToGateIncomingResponse,
 } from "../../../shared/contracts";
 import {
   AirplaneInquiryType,
@@ -29,32 +37,21 @@ export class BaseAirplane
   specification: AirplaneSpecification;
   status: AirplaneStatus;
   private readonly controlTowerMediator: ControlTowerMediator;
+  private readonly airplaneResponseMappingVisitor: AirplaneResponseMappingVisitor;
 
   constructor(
     name: string,
     specification: AirplaneSpecification,
     status: AirplaneStatus,
-    controlTowerMediator: ControlTowerMediator
+    controlTowerMediator: ControlTowerMediator,
+    airplaneResponseMappingVisitor: AirplaneResponseMappingVisitor
   ) {
     this.name = name;
     this.specification = specification;
     this.status = status;
     this.controlTowerMediator = controlTowerMediator;
+    this.airplaneResponseMappingVisitor = airplaneResponseMappingVisitor;
   }
-
-  private receiveLandingPermission(): void {}
-
-  private receiveTakeoffPermission(): void {}
-
-  private receiveRunwayExitPermission(): void {}
-
-  private receiveTaxiToGatePermission(): void {}
-
-  private receiveEngineShutdownPermission(): void {}
-
-  private receiveEmergencyLandingPermission(): void {}
-
-  private receiveRefuelingPermission(): void {}
 
   requestLandingPermission(runwayId: string, landingType: LandingType): void {
     console.log(
@@ -197,31 +194,166 @@ export class BaseAirplane
   }
 
   sendResponseToAirplane(response: AirplaneResponse): void {
+    if (!response.success) {
+      console.error(response.message);
+      return;
+    }
+
     switch (response.type) {
       case AirplaneRequestType.Landing:
-        this.receiveLandingPermission();
+        const landingIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
+
+        this.receiveLandingPermission(landingIncomingResponse);
         break;
       case AirplaneRequestType.Takeoff:
-        this.receiveTakeoffPermission();
+        const takeoffIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
+
+        this.receiveTakeoffPermission(takeoffIncomingResponse);
         break;
       case AirplaneRequestType.EmergencyLanding:
-        this.receiveEmergencyLandingPermission();
+        const emergencyLandingIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
+
+        this.receiveEmergencyLandingPermission(
+          emergencyLandingIncomingResponse
+        );
         break;
       case AirplaneRequestType.EngineShutdown:
-        this.receiveEngineShutdownPermission();
+        const engineShutdownIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
+
+        this.receiveEngineShutdownPermission(engineShutdownIncomingResponse);
         break;
       case AirplaneRequestType.Refueling:
-        this.receiveRefuelingPermission();
+        const engineRefuelingIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
+
+        this.receiveRefuelingPermission(engineRefuelingIncomingResponse);
         break;
       case AirplaneRequestType.RunwayExit:
-        this.receiveRunwayExitPermission();
+        const runwayExitIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
+
+        this.receiveRunwayExitPermission(runwayExitIncomingResponse);
         break;
       case AirplaneRequestType.TaxiToGate:
-        this.receiveTaxiToGatePermission();
+        const taxiToGateIncomingResponse =
+          response.accept(this.airplaneResponseMappingVisitor);
+
+        this.receiveTaxiToGatePermission(taxiToGateIncomingResponse);
         break;
       default:
         const exhaustiveCheck: never = response;
         throw new Error(`Unrecognized Response Type ${exhaustiveCheck}`);
     }
+  }
+
+  private receiveLandingPermission(
+    landingIncomingResponse: LandingIncomingResponse
+  ): void {
+    if (!landingIncomingResponse.success) {
+      console.error(landingIncomingResponse.message);
+      return;
+    }
+
+    const { runway } = landingIncomingResponse;
+
+    console.log(`${this.name} received landing permission on ${runway.name}`);
+  }
+
+  private receiveTakeoffPermission(
+    takeoffIncomingResponse: TakeoffSuccessIncomingResponse
+  ): void {
+    if (!takeoffIncomingResponse.success) {
+      console.error(takeoffIncomingResponse.message);
+      return;
+    }
+
+    const { runway, takeoffType } = takeoffIncomingResponse;
+
+    console.log(
+      `${this.name} received takeoff permission for ${TakeoffType[takeoffType]} on ${runway.name}`
+    );
+  }
+
+  private receiveEmergencyLandingPermission(
+    emergencyLandingIncomingResponse: EmergencyLandingIncomingResponse
+  ): void {
+    if (!emergencyLandingIncomingResponse.success) {
+      console.error(emergencyLandingIncomingResponse.message);
+      return;
+    }
+
+    const { runway } = emergencyLandingIncomingResponse;
+
+    console.log(
+      `${this.name} received emergency landing permission on ${runway.name}`
+    );
+  }
+
+  private receiveEngineShutdownPermission(
+    engineShutdownIncomingResponse: EngineShutdownIncomingResponse
+  ): void {
+    if (!engineShutdownIncomingResponse.success) {
+      console.error(engineShutdownIncomingResponse.message);
+      return;
+    }
+
+    const { engineId } = engineShutdownIncomingResponse;
+
+    console.log(`${this.name} shut down engine ${engineId}`);
+  }
+
+  private receiveRefuelingPermission(
+    engineRefuelingIncomingResponse: EngineRefuelingIncomingResponse
+  ): void {
+    if (!engineRefuelingIncomingResponse.success) {
+      console.error(engineRefuelingIncomingResponse.message);
+      return;
+    }
+
+    const { fuelInfo } = engineRefuelingIncomingResponse;
+
+    console.log(
+      `${
+        this.name
+      } received refuel permission and fuel info is ${JSON.stringify(fuelInfo)}`
+    );
+  }
+
+  private receiveRunwayExitPermission(
+    runwayExitIncomingResponse: RunwayExitIncomingResponse
+  ): void {
+    if (!runwayExitIncomingResponse.success) {
+      console.error(runwayExitIncomingResponse.message);
+      return;
+    }
+
+    const { direction } = runwayExitIncomingResponse;
+
+    console.log(
+      `${this.name} received ${Direction[direction]} runway exit permission.`
+    );
+  }
+
+  private receiveTaxiToGatePermission(
+    taxiToGateIncomingResponse: TaxiToGateIncomingResponse
+  ): void {
+    if (!taxiToGateIncomingResponse.success) {
+      console.error(taxiToGateIncomingResponse.message);
+      return;
+    }
+
+    const { gateId } = taxiToGateIncomingResponse;
+
+    console.log(`${this.name} received taxi to gate ${gateId} permission.`);
   }
 }

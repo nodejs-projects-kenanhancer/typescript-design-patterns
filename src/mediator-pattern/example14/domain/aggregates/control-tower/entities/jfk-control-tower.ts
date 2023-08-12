@@ -4,7 +4,18 @@ import {
   AirplaneRequest,
   ControlTower,
   ControlTowerMediator,
-  ControlTowerIncomingRequests,
+  EmergencyLandingFailureResponse,
+  EmergencyLandingSuccessResponse,
+  EngineRefuelingSuccessResponse,
+  EngineShutdownSuccessResponse,
+  LandingFailureResponse,
+  LandingSuccessResponse,
+  RunwayExitFailureResponse,
+  RunwayExitSuccessResponse,
+  TakeoffFailureResponse,
+  TakeoffSuccessResponse,
+  TaxiToGateFailureResponse,
+  TaxiToGateSuccessResponse,
 } from "../../../shared/contracts";
 import {
   AirplaneInquiryType,
@@ -27,198 +38,14 @@ import { Gate } from "./gate";
 import { Runway } from "./runway";
 import { RunwayStatus } from "./runway-status";
 
-export class JFKControlTower
-  implements ControlTower, ControlTowerIncomingRequests, ControlTowerMediator
-{
+export class JFKControlTower implements ControlTower, ControlTowerMediator {
   private readonly airplanes: AirplaneMediator[] = [];
   runways: Runway[];
   gates: Gate[];
 
-  handleLandingRequest(
-    airplane: AirplaneMediator,
-    runwayId: string,
-    landingType: LandingType
-  ): void {
-    const runway = this.runways.find((r) => r.name === runwayId);
-
-    if (!runway) throw new Error(`Runway ${runwayId} not found`);
-    if (!runway.isAvailableForLanding(airplane, landingType)) {
-      airplane.sendResponseToAirplane({
-        type: AirplaneRequestType.Landing,
-        success: false,
-        message: "Runway not available for landing",
-      });
-      return;
-    }
-
-    runway.occupy();
-
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.Landing,
-      message: `Permission granted to land on ${runwayId}`,
-      success: true,
-      runwayId,
-    });
-  }
-
-  handleTakeoffRequest(
-    airplane: AirplaneMediator,
-    runwayId: string,
-    takeoffType: TakeoffType
-  ): void {
-    const runway = this.runways.find((r) => r.name === runwayId);
-
-    if (!runway) throw new Error(`Runway ${runwayId} not found`);
-    if (!runway.isAvailableForTakeOff(airplane, takeoffType)) {
-      airplane.sendResponseToAirplane({
-        type: AirplaneRequestType.Takeoff,
-        success: false,
-        message: "Runway not available for takeoff",
-      });
-      return;
-    }
-
-    runway.occupy();
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.Takeoff,
-      success: true,
-      message: `Permission granted for takeoff from ${runwayId}`,
-      runwayId,
-      takeoffType,
-    });
-  }
-
-  handleRunwayExitRequest(
-    airplane: AirplaneMediator,
-    runwayId: string,
-    direction: Direction
-  ): void {
-    const runway = this.runways.find((r) => r.name === runwayId);
-    if (!runway) throw new Error(`Runway ${runwayId} not found`);
-
-    if (!runway.canExit(direction)) {
-      airplane.sendResponseToAirplane({
-        type: AirplaneRequestType.RunwayExit,
-        success: false,
-        message: `Cannot exit from the ${direction} of runway ${runwayId}`,
-      });
-      return;
-    }
-
-    runway.release();
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.RunwayExit,
-      success: true,
-      message: `Permission granted to exit runway ${runwayId}`,
-      runwayId,
-      direction,
-    });
-  }
-
-  handleTaxiToGateRequest(
-    airplane: AirplaneMediator,
-    gateId: string,
-    taxiSpeed: TaxiSpeed
-  ): void {
-    const gate = this.gates.find((g) => g.name === gateId);
-
-    if (!gate) throw new Error(`Gate ${gateId} not found`);
-    if (!gate.isAvailableForAirplane(airplane)) {
-      airplane.sendResponseToAirplane({
-        type: AirplaneRequestType.TaxiToGate,
-        message: "Gate not available for taxiing",
-        success: false,
-      });
-      return;
-    }
-
-    gate.occupy(airplane);
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.TaxiToGate,
-      message: `Permission granted to taxi to gate ${gateId}`,
-      success: true,
-      gateId,
-    });
-  }
-
-  handleEmergencyLandingRequest(
-    airplane: AirplaneMediator,
-    runwayId: string,
-    emergencyInfo: EmergencyInfo
-  ): void {
-    const runway = this.runways.find((r) => r.name === runwayId);
-    if (!runway) {
-      airplane.sendResponseToAirplane({
-        type: AirplaneRequestType.EmergencyLanding,
-        message: `Runway ${runwayId} not found`,
-        success: false,
-      });
-    }
-
-    runway.occupy();
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.EmergencyLanding,
-      message: `Permission granted for emergency landing on ${runwayId}`,
-      success: true,
-      runwayId,
-    });
-  }
-
-  handleEngineShutdownRequest(
-    airplane: AirplaneMediator,
-    engineId: string
-  ): void {
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.EngineShutdown,
-      message: `Permission granted to shut down engine ${engineId}`,
-      success: true,
-      engineId,
-    });
-  }
-
-  handleRefuelingRequest(airplane: AirplaneMediator, fuelInfo: FuelInfo): void {
-    airplane.sendResponseToAirplane({
-      type: AirplaneRequestType.Refueling,
-      success: true,
-      message: "Permission granted for refueling",
-      fuelInfo,
-    });
-  }
-
-  handleRunwayStatusInquiry(
-    airplane: AirplaneMediator,
-    runwayId: string,
-    inquiryType: InquiryType
-  ): RunwayStatus {
-    const runway = this.runways.find((r) => r.name === runwayId);
-    if (!runway) throw new Error(`Runway ${runwayId} not found`);
-
-    return runway.status;
-  }
-
-  handleGateAvailabilityInquiry(
-    airplane: AirplaneMediator,
-    gateId: string,
-    inquiryType: InquiryType
-  ): GateStatus {
-    const gate = this.gates.find((g) => g.name === gateId);
-    if (!gate) throw new Error(`Gate ${gateId} not found`);
-
-    return gate.currentStatus;
-  }
-
-  handleWeatherConditionInquiry(
-    airplane: AirplaneMediator,
-    location: string
-  ): WeatherStatus {
-    throw new Error("Method not implemented.");
-  }
-
-  handleAirTrafficInquiry(
-    airplane: AirplaneMediator,
-    info: AirTrafficInfo
-  ): AirTrafficStatus {
-    throw new Error("Method not implemented.");
+  constructor(runways: Runway[], gates: Gate[]) {
+    this.runways = runways;
+    this.gates = gates;
   }
 
   register(airplane: AirplaneMediator): void {
@@ -308,5 +135,188 @@ export class JFKControlTower
         const exhaustiveCheck: never = inquiry;
         throw new Error(`Unrecognized Inquiry Type ${exhaustiveCheck}`);
     }
+  }
+
+  private handleLandingRequest(
+    airplane: AirplaneMediator,
+    runwayId: string,
+    landingType: LandingType
+  ): void {
+    const runway = this.runways.find((r) => r.name === runwayId);
+
+    if (!runway) throw new Error(`Runway ${runwayId} not found`);
+    if (!runway.isAvailableForLanding(airplane, landingType)) {
+      airplane.sendResponseToAirplane(
+        new LandingFailureResponse("Runway not available for landing")
+      );
+
+      return;
+    }
+
+    runway.occupy();
+
+    airplane.sendResponseToAirplane(
+      new LandingSuccessResponse(
+        `Permission granted to land on ${runwayId}`,
+        runway
+      )
+    );
+  }
+
+  private handleTakeoffRequest(
+    airplane: AirplaneMediator,
+    runwayId: string,
+    takeoffType: TakeoffType
+  ): void {
+    const runway = this.runways.find((r) => r.name === runwayId);
+
+    if (!runway) throw new Error(`Runway ${runwayId} not found`);
+    if (!runway.isAvailableForTakeOff(airplane, takeoffType)) {
+      airplane.sendResponseToAirplane(
+        new TakeoffFailureResponse("Runway not available for takeoff")
+      );
+      return;
+    }
+
+    runway.occupy();
+    airplane.sendResponseToAirplane(
+      new TakeoffSuccessResponse(
+        `Permission granted for takeoff from ${runwayId}`,
+        runway,
+        takeoffType
+      )
+    );
+  }
+
+  private handleRunwayExitRequest(
+    airplane: AirplaneMediator,
+    runwayId: string,
+    direction: Direction
+  ): void {
+    const runway = this.runways.find((r) => r.name === runwayId);
+    if (!runway) throw new Error(`Runway ${runwayId} not found`);
+
+    if (!runway.canExit(direction)) {
+      airplane.sendResponseToAirplane(
+        new RunwayExitFailureResponse(
+          `Cannot exit from the ${direction} of runway ${runwayId}`
+        )
+      );
+      return;
+    }
+
+    runway.release();
+    airplane.sendResponseToAirplane(
+      new RunwayExitSuccessResponse(
+        `Permission granted to exit runway ${runwayId}`,
+        runwayId,
+        direction
+      )
+    );
+  }
+
+  private handleTaxiToGateRequest(
+    airplane: AirplaneMediator,
+    gateId: string,
+    taxiSpeed: TaxiSpeed
+  ): void {
+    const gate = this.gates.find((g) => g.name === gateId);
+
+    if (!gate) throw new Error(`Gate ${gateId} not found`);
+    if (!gate.isAvailableForAirplane(airplane)) {
+      airplane.sendResponseToAirplane(
+        new TaxiToGateFailureResponse("Gate not available for taxiing")
+      );
+      return;
+    }
+
+    gate.occupy(airplane);
+    airplane.sendResponseToAirplane(
+      new TaxiToGateSuccessResponse(
+        `Permission granted to taxi to gate ${gateId}`,
+        gateId
+      )
+    );
+  }
+
+  private handleEmergencyLandingRequest(
+    airplane: AirplaneMediator,
+    runwayId: string,
+    emergencyInfo: EmergencyInfo
+  ): void {
+    const runway = this.runways.find((r) => r.name === runwayId);
+    if (!runway) {
+      airplane.sendResponseToAirplane(
+        new EmergencyLandingFailureResponse(`Runway ${runwayId} not found`)
+      );
+    }
+
+    runway.occupy();
+    airplane.sendResponseToAirplane(
+      new EmergencyLandingSuccessResponse(
+        `Permission granted for emergency landing on ${runwayId}`,
+        runway
+      )
+    );
+  }
+
+  private handleEngineShutdownRequest(
+    airplane: AirplaneMediator,
+    engineId: string
+  ): void {
+    airplane.sendResponseToAirplane(
+      new EngineShutdownSuccessResponse(
+        `Permission granted to shut down engine ${engineId}`,
+        engineId
+      )
+    );
+  }
+
+  private handleRefuelingRequest(
+    airplane: AirplaneMediator,
+    fuelInfo: FuelInfo
+  ): void {
+    airplane.sendResponseToAirplane(
+      new EngineRefuelingSuccessResponse(
+        "Permission granted for refueling",
+        fuelInfo
+      )
+    );
+  }
+
+  private handleRunwayStatusInquiry(
+    airplane: AirplaneMediator,
+    runwayId: string,
+    inquiryType: InquiryType
+  ): RunwayStatus {
+    const runway = this.runways.find((r) => r.name === runwayId);
+    if (!runway) throw new Error(`Runway ${runwayId} not found`);
+
+    return runway.status;
+  }
+
+  private handleGateAvailabilityInquiry(
+    airplane: AirplaneMediator,
+    gateId: string,
+    inquiryType: InquiryType
+  ): GateStatus {
+    const gate = this.gates.find((g) => g.name === gateId);
+    if (!gate) throw new Error(`Gate ${gateId} not found`);
+
+    return gate.currentStatus;
+  }
+
+  private handleWeatherConditionInquiry(
+    airplane: AirplaneMediator,
+    location: string
+  ): WeatherStatus {
+    throw new Error("Method not implemented.");
+  }
+
+  private handleAirTrafficInquiry(
+    airplane: AirplaneMediator,
+    info: AirTrafficInfo
+  ): AirTrafficStatus {
+    throw new Error("Method not implemented.");
   }
 }

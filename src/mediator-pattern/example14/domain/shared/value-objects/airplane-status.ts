@@ -16,4 +16,26 @@ export class AirplaneStatus {
   airTraffic: AirTrafficStatus;
   weatherCondition: WeatherStatus;
   landingGearStatus: LandingGearStatus;
+
+  constructor(
+    passengerCount: number,
+    fuelStatus: FuelStatus,
+    currentLocation: Position,
+    engineStatus: EngineStatus,
+    flightOperation: FlightOperation,
+    maintenanceStatus: MaintenanceStatus,
+    airTraffic: AirTrafficStatus,
+    weatherCondition: WeatherStatus,
+    landingGearStatus: LandingGearStatus
+  ) {
+    passengerCount = passengerCount;
+    fuelStatus = fuelStatus;
+    currentLocation = currentLocation;
+    engineStatus = engineStatus;
+    flightOperation = flightOperation;
+    maintenanceStatus = maintenanceStatus;
+    airTraffic = airTraffic;
+    weatherCondition = weatherCondition;
+    landingGearStatus = landingGearStatus;
+  }
 }
