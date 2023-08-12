@@ -16,9 +16,7 @@ import {
   RunwayVisibilityStatus,
 } from "./domain/aggregates/control-tower/enums";
 import {
-  Airplane,
-  AirplaneOutgoingRequests,
-  ControlTower,
+  AirplaneOutgoingRequests
 } from "./domain/shared/contracts";
 import {
   GateStatus,
@@ -114,4 +112,5 @@ class MediatorClient {
 
 MediatorClient.main();
 
-export {};
+export { };
+
