@@ -16,7 +16,7 @@ export class LandingSuccessResponse implements IncomingResponseVisitor {
   }
 
   accept(visitor: AirplaneResponseMappingVisitor): LandingIncomingResponse {
-    const mappedResponse = visitor.visitLandingResponse(this);
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }

@@ -14,8 +14,10 @@ export class EngineShutdownSuccessResponse implements IncomingResponseVisitor {
     this.engineId = engineId;
   }
 
-  accept(visitor: AirplaneResponseMappingVisitor): EngineShutdownIncomingResponse {
-    const mappedResponse = visitor.visitEngineShutdownResponse(this);
+  accept(
+    visitor: AirplaneResponseMappingVisitor
+  ): EngineShutdownIncomingResponse {
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }

@@ -18,21 +18,11 @@ import {
 } from "./control-tower";
 
 export interface AirplaneResponseMappingVisitor {
-  visitLandingResponse(response: LandingResponse): LandingIncomingResponse;
-  visitTakeoffResponse(response: TakeoffResponse): TakeoffIncomingResponse;
-  visitEmergencyLandingResponse(
-    response: EmergencyLandingResponse
-  ): EmergencyLandingIncomingResponse;
-  visitRunwayExitResponse(
-    response: RunwayExitResponse
-  ): RunwayExitIncomingResponse;
-  visitTaxiToGateResponse(
-    response: TaxiToGateResponse
-  ): TaxiToGateIncomingResponse;
-  visitEngineShutdownResponse(
-    response: EngineShutdownResponse
-  ): EngineShutdownIncomingResponse;
-  visitEngineRefuelingResponse(
-    response: EngineRefuelingResponse
-  ): EngineRefuelingIncomingResponse;
+  visit(response: LandingResponse): LandingIncomingResponse;
+  visit(response: TakeoffResponse): TakeoffIncomingResponse;
+  visit(response: EmergencyLandingResponse): EmergencyLandingIncomingResponse;
+  visit(response: RunwayExitResponse): RunwayExitIncomingResponse;
+  visit(response: TaxiToGateResponse): TaxiToGateIncomingResponse;
+  visit(response: EngineShutdownResponse): EngineShutdownIncomingResponse;
+  visit(response: EngineRefuelingResponse): EngineRefuelingIncomingResponse;
 }

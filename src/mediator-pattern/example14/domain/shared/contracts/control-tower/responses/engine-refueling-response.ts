@@ -18,7 +18,7 @@ export class EngineRefuelingSuccessResponse implements IncomingResponseVisitor {
   accept(
     visitor: AirplaneResponseMappingVisitor
   ): EngineRefuelingIncomingResponse {
-    const mappedResponse = visitor.visitEngineRefuelingResponse(this);
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }

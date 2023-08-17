@@ -15,7 +15,7 @@ export class TaxiToGateSuccessResponse implements IncomingResponseVisitor {
   }
 
   accept(visitor: AirplaneResponseMappingVisitor): TaxiToGateIncomingResponse {
-    const mappedResponse = visitor.visitTaxiToGateResponse(this);
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }

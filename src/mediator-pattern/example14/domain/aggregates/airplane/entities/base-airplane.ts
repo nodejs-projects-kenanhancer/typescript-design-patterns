@@ -10,7 +10,7 @@ import {
   EngineShutdownIncomingResponse,
   LandingIncomingResponse,
   RunwayExitIncomingResponse,
-  TakeoffSuccessIncomingResponse,
+  TakeoffIncomingResponse,
   TaxiToGateIncomingResponse,
 } from "../../../shared/contracts";
 import {
@@ -245,8 +245,9 @@ export class BaseAirplane
         this.receiveRunwayExitPermission(runwayExitIncomingResponse);
         break;
       case AirplaneRequestType.TaxiToGate:
-        const taxiToGateIncomingResponse =
-          response.accept(this.airplaneResponseMappingVisitor);
+        const taxiToGateIncomingResponse = response.accept(
+          this.airplaneResponseMappingVisitor
+        );
 
         this.receiveTaxiToGatePermission(taxiToGateIncomingResponse);
         break;
@@ -270,7 +271,7 @@ export class BaseAirplane
   }
 
   private receiveTakeoffPermission(
-    takeoffIncomingResponse: TakeoffSuccessIncomingResponse
+    takeoffIncomingResponse: TakeoffIncomingResponse
   ): void {
     if (!takeoffIncomingResponse.success) {
       console.error(takeoffIncomingResponse.message);

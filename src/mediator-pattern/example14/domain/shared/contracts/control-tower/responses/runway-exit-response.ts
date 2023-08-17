@@ -17,7 +17,7 @@ export class RunwayExitSuccessResponse implements IncomingResponseVisitor {
   }
 
   accept(visitor: AirplaneResponseMappingVisitor): RunwayExitIncomingResponse {
-    const mappedResponse = visitor.visitRunwayExitResponse(this);
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }

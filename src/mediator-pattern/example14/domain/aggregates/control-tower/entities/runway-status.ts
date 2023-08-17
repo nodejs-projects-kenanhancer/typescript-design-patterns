@@ -1,13 +1,13 @@
 import { WeatherCondition } from "../../../shared/enums";
 import {
-  RunwayUsageStatus,
-  RunwayLightStatus,
-  RunwaySurfaceStatus,
   RunwayCleaningStatus,
-  RunwayVisibilityStatus,
-  RunwayOperationalStatus,
-  RunwayMaintenanceStatus,
   RunwayConstructionStatus,
+  RunwayLightStatus,
+  RunwayMaintenanceStatus,
+  RunwayOperationalStatus,
+  RunwaySurfaceStatus,
+  RunwayUsageStatus,
+  RunwayVisibilityStatus,
 } from "../enums";
 
 export class RunwayStatus {

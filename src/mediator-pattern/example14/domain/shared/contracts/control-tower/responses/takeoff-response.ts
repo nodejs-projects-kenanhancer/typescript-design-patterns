@@ -1,6 +1,6 @@
 import { Runway } from "../../../../aggregates/control-tower/entities";
 import { AirplaneRequestType, TakeoffType } from "../../../enums";
-import { AirplaneIncomingResponse, TakeoffSuccessIncomingResponse } from "../../airplane";
+import { TakeoffIncomingResponse } from "../../airplane";
 import { AirplaneResponseMappingVisitor } from "../../airplane-response-mapping-visitor";
 import { IncomingResponseVisitor } from "./incoming-response-visitor";
 
@@ -17,8 +17,8 @@ export class TakeoffSuccessResponse implements IncomingResponseVisitor {
     this.takeoffType = takeoffType;
   }
 
-  accept(visitor: AirplaneResponseMappingVisitor): TakeoffSuccessIncomingResponse {
-    const mappedResponse = visitor.visitTakeoffResponse(this);
+  accept(visitor: AirplaneResponseMappingVisitor): TakeoffIncomingResponse {
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }

@@ -17,8 +17,10 @@ export class EmergencyLandingSuccessResponse
     this.runway = runway;
   }
 
-  accept(visitor: AirplaneResponseMappingVisitor): EmergencyLandingIncomingResponse {
-    const mappedResponse = visitor.visitEmergencyLandingResponse(this);
+  accept(
+    visitor: AirplaneResponseMappingVisitor
+  ): EmergencyLandingIncomingResponse {
+    const mappedResponse = visitor.visit(this);
 
     return mappedResponse;
   }
