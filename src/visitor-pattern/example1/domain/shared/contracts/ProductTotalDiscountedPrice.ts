@@ -1,4 +1,4 @@
-import { ProductTotalDiscountedPriceDetail } from "./ProductTotalDiscountedPriceDetail";
+import { ProductTotalDiscountedPriceDetail } from "./productTotalDiscountedPriceDetail";
 
 export type ProductTotalDiscountedPrice = {
   books: ProductTotalDiscountedPriceDetail;

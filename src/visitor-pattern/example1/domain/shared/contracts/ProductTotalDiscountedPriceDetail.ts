@@ -1,6 +1,5 @@
-
 export type ProductTotalDiscountedPriceDetail = {
-    names: string[];
-    totalDiscountedPrice: number;
-    discountedPrice: number;
+  names: string[];
+  totalDiscountedPrice: number;
+  discountedPrice: number;
 };

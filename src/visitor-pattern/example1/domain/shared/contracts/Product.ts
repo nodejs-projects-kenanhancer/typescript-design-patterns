@@ -1,4 +1,4 @@
-import { ProductVisitor } from "./ProductVisitor";
+import { ProductVisitor } from "./productVisitor";
 
 export interface Product {
   name: string;

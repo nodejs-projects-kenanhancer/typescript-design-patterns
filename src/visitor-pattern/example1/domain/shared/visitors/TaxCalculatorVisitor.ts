@@ -2,7 +2,7 @@ import { Book, Electronic, Fruit } from "../../entities";
 import { Product, ProductTax, ProductVisitor } from "../contracts";
 
 export class TaxCalculatorVisitor implements ProductVisitor {
-  private bookTaxRate: number;
+private bookTaxRate: number;
   private fruitTaxRate: number;
   private electronicTaxRate: number;
   private _totalTax: ProductTax = {

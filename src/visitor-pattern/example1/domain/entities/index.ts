@@ -1,3 +1,3 @@
-export * from "./Book";
-export * from "./Electronic";
-export * from "./Fruit";
+export * from "./book";
+export * from "./electronic";
+export * from "./fruit";
