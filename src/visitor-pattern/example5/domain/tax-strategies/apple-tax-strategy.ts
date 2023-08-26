@@ -1,4 +1,4 @@
-import { TaxStrategy } from "./tax-strategy";
+import { TaxStrategy } from "./contracts";
 
 export class AppleTaxStrategy implements TaxStrategy {
   getTaxRate(): number {
