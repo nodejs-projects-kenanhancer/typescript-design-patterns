@@ -1,4 +1,4 @@
-interface Shape {
+interface VisitableShape {
   accept<T>(visitor: ShapeVisitor<T>): T;
 }
 
@@ -8,7 +8,7 @@ interface ShapeVisitor<T> {
   visit(square: Square): T;
 }
 
-class Circle implements Shape {
+class Circle implements VisitableShape {
   constructor(public radius: number) {}
 
   accept<T>(visitor: ShapeVisitor<T>): T {
@@ -16,7 +16,7 @@ class Circle implements Shape {
   }
 }
 
-class Rectangle implements Shape {
+class Rectangle implements VisitableShape {
   constructor(public width: number, public height: number) {}
 
   accept<T>(visitor: ShapeVisitor<T>): T {
@@ -154,11 +154,11 @@ class ScalingCalculatorVisitor implements ShapeVisitor<void> {
   }
 }
 
-class ShapeDuplicatorVisitor implements ShapeVisitor<Shape> {
-  visit(circle: Circle): Shape;
-  visit(rectangle: Rectangle): Shape;
-  visit(square: Square): Shape;
-  visit(shape: Circle | Rectangle | Square): Shape {
+class ShapeDuplicatorVisitor implements ShapeVisitor<VisitableShape> {
+  visit(circle: Circle): VisitableShape;
+  visit(rectangle: Rectangle): VisitableShape;
+  visit(square: Square): VisitableShape;
+  visit(shape: Circle | Rectangle | Square): VisitableShape {
     if (shape instanceof Circle) {
       this.duplicateCircle(shape);
     } else if (shape instanceof Rectangle) {
@@ -168,11 +168,11 @@ class ShapeDuplicatorVisitor implements ShapeVisitor<Shape> {
     return undefined;
   }
 
-  private duplicateCircle(circle: Circle): Shape {
+  private duplicateCircle(circle: Circle): VisitableShape {
     return new Circle(circle.radius);
   }
 
-  private duplicateRectangle(rectangle: Rectangle): Shape {
+  private duplicateRectangle(rectangle: Rectangle): VisitableShape {
     return new Rectangle(rectangle.width, rectangle.height);
   }
 }
@@ -205,7 +205,7 @@ class RotationCalculatorVisitor implements ShapeVisitor<void> {
 class AreaComparerVisitor implements ShapeVisitor<string> {
   private areaCalculator = new AreaCalculatorVisitor();
 
-  constructor(private otherShape: Shape) {}
+  constructor(private otherShape: VisitableShape) {}
 
   visit(circle: Circle): string;
   visit(rectangle: Rectangle): string;
@@ -243,7 +243,7 @@ class AreaComparerVisitor implements ShapeVisitor<string> {
   }
 }
 
-function printShapeDetails(shapes: Shape[]) {
+function printShapeDetails(shapes: VisitableShape[]) {
   const perimeterCalculator = new PerimeterCalculatorVisitor();
   const areaCalculator = new AreaCalculatorVisitor();
   const diagonalDiameterCalculator = new DiagonalDiameterCalculatorVisitor();
@@ -252,7 +252,7 @@ function printShapeDetails(shapes: Shape[]) {
   const shapeDuplicator = new ShapeDuplicatorVisitor();
   const rotationCalculator = new RotationCalculatorVisitor();
 
-  const circle: Shape = new Circle(5);
+  const circle: VisitableShape = new Circle(5);
   const areaComparer = new AreaComparerVisitor(circle);
 
   for (const shape of shapes) {
@@ -283,11 +283,11 @@ function printShapeDetails(shapes: Shape[]) {
   }
 }
 
-const circle: Shape = new Circle(5);
-const rectangle: Shape = new Rectangle(4, 6);
-const square: Shape = new Square(4);
+const circle: VisitableShape = new Circle(5);
+const rectangle: VisitableShape = new Rectangle(4, 6);
+const square: VisitableShape = new Square(4);
 
-const shapes: Shape[] = [circle, rectangle, square];
+const shapes: VisitableShape[] = [circle, rectangle, square];
 
 printShapeDetails(shapes);
 
