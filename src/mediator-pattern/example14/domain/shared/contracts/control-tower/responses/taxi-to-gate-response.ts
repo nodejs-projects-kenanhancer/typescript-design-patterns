@@ -1,9 +1,9 @@
 import { AirplaneRequestType } from "../../../enums";
 import { TaxiToGateIncomingResponse } from "../../airplane";
 import { AirplaneResponseMappingVisitor } from "../../airplane-response-mapping-visitor";
-import { IncomingResponseVisitor } from "./incoming-response-visitor";
+import { VisitableResponse } from "./visitable-response";
 
-export class TaxiToGateSuccessResponse implements IncomingResponseVisitor {
+export class TaxiToGateSuccessResponse implements VisitableResponse {
   readonly type = AirplaneRequestType.TaxiToGate;
   readonly success = true;
   message: string;

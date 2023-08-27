@@ -2,9 +2,9 @@ import { Runway } from "../../../../aggregates/control-tower/entities";
 import { AirplaneRequestType, TakeoffType } from "../../../enums";
 import { TakeoffIncomingResponse } from "../../airplane";
 import { AirplaneResponseMappingVisitor } from "../../airplane-response-mapping-visitor";
-import { IncomingResponseVisitor } from "./incoming-response-visitor";
+import { VisitableResponse } from "./visitable-response";
 
-export class TakeoffSuccessResponse implements IncomingResponseVisitor {
+export class TakeoffSuccessResponse implements VisitableResponse {
   readonly type = AirplaneRequestType.Takeoff;
   readonly success = true;
   message: string;

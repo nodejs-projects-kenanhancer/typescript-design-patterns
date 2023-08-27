@@ -1,9 +1,9 @@
 import { AirplaneRequestType } from "../../../enums";
 import { EngineShutdownIncomingResponse } from "../../airplane";
 import { AirplaneResponseMappingVisitor } from "../../airplane-response-mapping-visitor";
-import { IncomingResponseVisitor } from "./incoming-response-visitor";
+import { VisitableResponse } from "./visitable-response";
 
-export class EngineShutdownSuccessResponse implements IncomingResponseVisitor {
+export class EngineShutdownSuccessResponse implements VisitableResponse {
   readonly type = AirplaneRequestType.EngineShutdown;
   readonly success = true;
   message: string;
